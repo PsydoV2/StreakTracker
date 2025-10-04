@@ -1,0 +1,14 @@
+{
+  "viewStreakDetails": "Détails de la série",
+  "archive": "Archiver",
+  "delete": "Supprimer",
+  "cancel": "Annuler",
+  "streakOverview": "Aperçu des séries",
+  "pinAuthentication": "Authentification par code PIN",
+  "warnPinWorking": "Le code PIN ne fonctionne pas correctement pour le moment",
+  "activeStreaks": "Séries actives",
+  "archivedStreaks": "Séries archivées",
+  "subTitleStart": "Reprenez là où vous vous êtes arrêté. Vos séries vous attendent.",
+  "settings": "Paramètres",
+  "timeSpanText": "Last 6 Months:"
+}

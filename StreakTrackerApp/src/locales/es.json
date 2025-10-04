@@ -1,0 +1,14 @@
+{
+  "viewStreakDetails": "Detalles de la racha",
+  "archive": "Archivar",
+  "delete": "Eliminar",
+  "cancel": "Cancelar",
+  "streakOverview": "Resumen de rachas",
+  "pinAuthentication": "Autenticación por PIN",
+  "warnPinWorking": "El PIN no funciona correctamente en este momento",
+  "activeStreaks": "Rachas activas",
+  "archivedStreaks": "Rachas archivadas",
+  "subTitleStart": "Continúa donde lo dejaste. Tus rachas te están esperando.",
+  "settings": "Configuración",
+  "timeSpanText": "Last 6 Months:"
+}

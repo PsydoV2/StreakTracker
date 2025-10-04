@@ -1,0 +1,14 @@
+{
+  "viewStreakDetails": "Streak-Details",
+  "archive": "Archivieren",
+  "delete": "Löschen",
+  "cancel": "Abbrechen",
+  "streakOverview": "Streak-Übersicht",
+  "pinAuthentication": "PIN-Authentifizierung",
+  "warnPinWorking": "PIN funktioniert derzeit nicht korrekt",
+  "activeStreaks": "Aktive Streaks",
+  "archivedStreaks": "Archivierte Streaks",
+  "subTitleStart": "Mach dort weiter, wo du aufgehört hast. Deine Streaks warten auf dich.",
+  "settings": "Einstellungen",
+  "timeSpanText": "Letzte 6 Monate:"
+}

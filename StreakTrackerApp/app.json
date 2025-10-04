@@ -1,0 +1,48 @@
+{
+  "expo": {
+    "name": "StreakTracker",
+    "slug": "streaktracker",
+    "version": "1.4.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/icon.png",
+    "scheme": "streaktracker",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "image": "./assets/images/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#1a1a1a"
+    },
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "backgroundColor": "#1a1a1a"
+      },
+      "package": "com.psydo.streaktracker"
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "static",
+      "favicon": "./assets/images/favicon.png"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-web-browser",
+      "expo-secure-store",
+      "expo-localization"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "56c57319-8317-4119-aa8b-d27c4c6acbd2"
+      }
+    },
+    "owner": "psydo"
+  }
+}

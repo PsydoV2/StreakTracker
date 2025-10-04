@@ -1,0 +1,14 @@
+{
+  "viewStreakDetails": "Seri Detayları",
+  "archive": "Arşivle",
+  "delete": "Sil",
+  "cancel": "İptal",
+  "streakOverview": "Seri Genel Bakış",
+  "pinAuthentication": "PIN Doğrulama",
+  "warnPinWorking": "PIN şu anda düzgün çalışmıyor",
+  "activeStreaks": "Aktif Seriler",
+  "archivedStreaks": "Arşivlenmiş Seriler",
+  "subTitleStart": "Kaldığın yerden devam et. Serilerin seni bekliyor.",
+  "settings": "Ayarlar",
+  "timeSpanText": "Last 6 Months:"
+}
