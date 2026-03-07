@@ -1,3 +1,4 @@
+// app/AuthScreen.tsx
 import {
   Image,
   Keyboard,
@@ -16,25 +17,43 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Haptics from "expo-haptics";
 import { useTranslation } from "react-i18next";
 
-export default function Login() {
+const STORAGE_KEY_PIN = "StreakTrackerPin";
+
+export default function AuthScreen() {
   const colorScheme = useColorScheme();
   const colorPalette = colorScheme === "dark" ? Colors.dark : Colors.light;
   const styles = getStyles(colorPalette);
 
   const [digits, setDigits] = useState(["", "", "", ""]);
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
-  const [isLoadingPin, setIsLoadingPin] = useState<boolean>();
+  const [isLoadingPin, setIsLoadingPin] = useState(true);
 
   const { t } = useTranslation();
 
-  const storageKeyForPin = "StreakTrackerPin";
+  // useRef array – stable across renders, no Rules-of-Hooks violation.
+  const inputs = useRef<Array<TextInput | null>>([null, null, null, null]);
 
-  const inputs = [
-    useRef<TextInput>(null),
-    useRef<TextInput>(null),
-    useRef<TextInput>(null),
-    useRef<TextInput>(null),
-  ];
+  useEffect(() => {
+    const checkPin = async () => {
+      try {
+        const pin = await AsyncStorage.getItem(STORAGE_KEY_PIN);
+        if (__DEV__)
+          console.info("[AuthScreen] Stored PIN found:", pin !== null);
+
+        if (!pin || pin.trim().length === 0) {
+          router.replace("/");
+        } else {
+          setIsLoadingPin(false);
+        }
+      } catch (error) {
+        console.error("[AuthScreen] Failed to read PIN:", error);
+        // Fail open: if storage is broken, skip the lock screen.
+        router.replace("/");
+      }
+    };
+
+    checkPin();
+  }, []);
 
   const handleChange = (text: string, index: number) => {
     const newDigits = [...digits];
@@ -44,7 +63,7 @@ export default function Login() {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
 
     if (text && index < 3) {
-      inputs[index + 1].current?.focus();
+      inputs.current[index + 1]?.focus();
     }
 
     if (newDigits.every((d) => d.length === 1)) {
@@ -52,42 +71,45 @@ export default function Login() {
     }
   };
 
-  const checkPassword = async (entered: string) => {
-    let stored = await AsyncStorage.getItem(storageKeyForPin);
-    if (!stored) return;
-
-    if (entered === stored) {
-      await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-      setIsCorrect(true);
-      setTimeout(() => {
-        router.replace("/");
-      }, 300);
-    } else {
-      await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
-      setIsCorrect(false);
+  const handleBackspace = (key: string, index: number) => {
+    if (key === "Backspace" && digits[index] === "" && index > 0) {
+      inputs.current[index - 1]?.focus();
+      const newDigits = [...digits];
+      newDigits[index - 1] = "";
+      setDigits(newDigits);
+      Haptics.selectionAsync();
     }
   };
 
-  useEffect(() => {
-    setIsLoadingPin(true);
+  const checkPassword = async (entered: string) => {
+    try {
+      const stored = await AsyncStorage.getItem(STORAGE_KEY_PIN);
+      if (!stored) return;
 
-    const checkPin = async () => {
-      const pin = await AsyncStorage.getItem(storageKeyForPin);
-      if (__DEV__) console.info("Found: ", pin);
-
-      if (!pin || pin.trim().length === 0) {
-        router.replace("/");
+      if (entered === stored) {
+        await Haptics.notificationAsync(
+          Haptics.NotificationFeedbackType.Success,
+        );
+        setIsCorrect(true);
+        setTimeout(() => router.replace("/"), 300);
       } else {
-        setIsLoadingPin(false); // Nur wenn PIN existiert
+        await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+        setIsCorrect(false);
+        // Reset digits so the user can try again immediately.
+        setTimeout(() => {
+          setDigits(["", "", "", ""]);
+          setIsCorrect(null);
+          inputs.current[0]?.focus();
+        }, 600);
       }
-    };
-
-    checkPin();
-  }, []);
+    } catch (error) {
+      console.error("[AuthScreen] Failed to verify PIN:", error);
+    }
+  };
 
   if (isLoadingPin) {
     return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <View style={styles.loadingContainer}>
         <Text>Loading...</Text>
       </View>
     );
@@ -97,7 +119,7 @@ export default function Login() {
     <KeyboardAvoidingView
       style={{ flex: 1 }}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
-      keyboardVerticalOffset={Platform.OS === "ios" ? 60 : 0} // ggf. anpassen
+      keyboardVerticalOffset={Platform.OS === "ios" ? 60 : 0}
     >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.container}>
@@ -112,33 +134,22 @@ export default function Login() {
             {digits.map((digit, index) => (
               <TextInput
                 key={index}
-                ref={inputs[index]}
+                ref={(ref) => {
+                  inputs.current[index] = ref;
+                }}
                 style={[
                   styles.input,
-                  isCorrect === true && {
-                    borderColor: "green",
-                    borderWidth: 2,
-                  },
-                  isCorrect === false && { borderColor: "red", borderWidth: 2 },
+                  isCorrect === true && styles.inputSuccess,
+                  isCorrect === false && styles.inputError,
                 ]}
                 keyboardType="number-pad"
                 secureTextEntry
                 maxLength={1}
                 value={digit}
                 onChangeText={(text) => handleChange(text, index)}
-                onKeyPress={({ nativeEvent }) => {
-                  if (
-                    nativeEvent.key === "Backspace" &&
-                    digits[index] === "" &&
-                    index > 0
-                  ) {
-                    inputs[index - 1].current?.focus();
-                    const newDigits = [...digits];
-                    newDigits[index - 1] = "";
-                    setDigits(newDigits);
-                    Haptics.selectionAsync();
-                  }
-                }}
+                onKeyPress={({ nativeEvent }) =>
+                  handleBackspace(nativeEvent.key, index)
+                }
               />
             ))}
           </View>
@@ -150,6 +161,11 @@ export default function Login() {
 
 const getStyles = (colorPalette: typeof Colors.light) =>
   StyleSheet.create({
+    loadingContainer: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+    },
     container: {
       flex: 1,
       paddingHorizontal: 24,
@@ -182,6 +198,14 @@ const getStyles = (colorPalette: typeof Colors.light) =>
       fontSize: 24,
       fontFamily: "Roboto",
       borderColor: "transparent",
+    },
+    inputSuccess: {
+      borderColor: "green",
+      borderWidth: 2,
+    },
+    inputError: {
+      borderColor: "red",
+      borderWidth: 2,
     },
     inputCon: {
       flexDirection: "row",

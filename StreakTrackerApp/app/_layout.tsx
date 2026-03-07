@@ -1,17 +1,28 @@
+// app/_layout.tsx
 import "react-native-gesture-handler";
-import "../src/i18n"; // Wichtig: ganz am Anfang importieren
+import "../src/i18n";
+
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
-import { useEffect, useState } from "react";
-import { SafeAreaProvider } from "react-native-safe-area-context";
+import { useEffect } from "react";
 import { useColorScheme } from "react-native";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 import {
   DarkTheme,
   DefaultTheme,
   ThemeProvider,
 } from "@react-navigation/native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { Slot } from "expo-router";
+import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
+
+import { StreaksProvider } from "@/src/context/StreaksContext";
+import { LanguageProvider } from "@/src/context/LanguageContext";
+import {
+  requestNotificationPermissions,
+  scheduleDefaultReminders,
+} from "@/src/utils/NotificationManager";
 
 export { ErrorBoundary } from "expo-router";
 
@@ -19,7 +30,6 @@ export const unstable_settings = {
   initialRouteName: "AuthScreen",
 };
 
-// Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
@@ -30,7 +40,6 @@ export default function RootLayout() {
     ...FontAwesome.font,
   });
 
-  // Expo Router uses Error Boundaries to catch errors in the navigation tree.
   useEffect(() => {
     if (error) throw error;
   }, [error]);
@@ -42,24 +51,15 @@ export default function RootLayout() {
   }, [loaded]);
 
   useEffect(() => {
+    // Fire-and-forget: errors are handled inside each function.
     requestNotificationPermissions();
     scheduleDefaultReminders();
   }, []);
 
-  if (!loaded) {
-    return null;
-  }
+  if (!loaded) return null;
 
   return <RootLayoutNav />;
 }
-import { Slot } from "expo-router";
-import { StreaksProvider } from "@/src/context/StreaksContext";
-import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
-import { LanguageProvider } from "@/src/context/LanguageContext";
-import {
-  requestNotificationPermissions,
-  scheduleDefaultReminders,
-} from "@/src/utils/NotificationManager";
 
 function RootLayoutNav() {
   const colorScheme = useColorScheme();

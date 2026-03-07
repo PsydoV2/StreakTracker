@@ -1,3 +1,4 @@
+// app/(auth)/settings.tsx
 import {
   StyleSheet,
   Switch,
@@ -15,10 +16,24 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "@/src/context/LanguageContext";
 
+const STORAGE_KEY_PIN = "StreakTrackerPin";
+
+type Language = "en" | "de" | "es" | "fr" | "it" | "tr";
+
+const LANGUAGES: { code: Language; flag: string }[] = [
+  { code: "en", flag: "🇺🇸" },
+  { code: "de", flag: "🇩🇪" },
+  { code: "fr", flag: "🇫🇷" },
+  { code: "es", flag: "🇪🇸" },
+  { code: "it", flag: "🇮🇹" },
+  { code: "tr", flag: "🇹🇷" },
+];
+
 export default function Settings() {
   const colorScheme = useColorScheme();
   const colorPalette = colorScheme === "dark" ? Colors.dark : Colors.light;
   const styles = getStyles(colorPalette);
+
   const [pinSet, setPinSet] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [pinStep, setPinStep] = useState<"enter" | "confirm">("enter");
@@ -26,21 +41,21 @@ export default function Settings() {
   const [confirmPin, setConfirmPin] = useState(["", "", "", ""]);
   const [pinError, setPinError] = useState(false);
 
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
+  const { setLanguage } = useLanguage();
 
-  const inputs = Array.from({ length: 4 }, () => useRef<TextInput>(null));
-  const confirmInputs = Array.from({ length: 4 }, () =>
-    useRef<TextInput>(null)
-  );
+  // Stable ref arrays – avoids calling useRef inside a loop (Rules of Hooks).
+  const inputs = useRef<Array<TextInput | null>>([null, null, null, null]);
+  const confirmInputs = useRef<Array<TextInput | null>>([
+    null,
+    null,
+    null,
+    null,
+  ]);
 
-  const { language, setLanguage } = useLanguage();
-
-  const storageKeyForPin = "StreakTrackerPin";
-
-  // Load current PIN status
   useEffect(() => {
     (async () => {
-      const pin = await AsyncStorage.getItem(storageKeyForPin);
+      const pin = await AsyncStorage.getItem(STORAGE_KEY_PIN);
       setPinSet(!!pin);
     })();
   }, []);
@@ -49,12 +64,13 @@ export default function Settings() {
     setEnteredPin(["", "", "", ""]);
     setConfirmPin(["", "", "", ""]);
     setPinStep("enter");
+    setPinError(false);
     setModalVisible(true);
   };
 
   const toggleUsePin = async (value: boolean) => {
     if (!value) {
-      await AsyncStorage.removeItem(storageKeyForPin);
+      await AsyncStorage.removeItem(STORAGE_KEY_PIN);
       setPinSet(false);
     } else {
       openSetPinModal();
@@ -65,38 +81,43 @@ export default function Settings() {
     const target = isConfirm ? [...confirmPin] : [...enteredPin];
     target[index] = text;
 
-    isConfirm ? setConfirmPin(target) : setEnteredPin(target);
+    if (isConfirm) {
+      setConfirmPin(target);
+    } else {
+      setEnteredPin(target);
+    }
 
     if (text && index < 3) {
-      const nextInput = isConfirm
-        ? confirmInputs[index + 1]
-        : inputs[index + 1];
-      nextInput.current?.focus();
+      const nextRef = isConfirm ? confirmInputs : inputs;
+      nextRef.current[index + 1]?.focus();
     }
   };
 
   const handleNextStepOrSave = async () => {
     setPinError(false);
+
     if (pinStep === "enter") {
-      if (enteredPin.join("").length === 4) {
-        setPinStep("confirm");
-        setTimeout(() => confirmInputs[0].current?.focus(), 100);
-      } else {
+      if (enteredPin.join("").length < 4) {
         setPinError(true);
-      }
-    } else {
-      if (confirmPin.join("") !== enteredPin.join("")) {
-        setPinError(true);
-        setConfirmPin(["", "", "", ""]);
-        confirmInputs[0].current?.focus();
         return;
       }
-
-      await AsyncStorage.setItem(storageKeyForPin, enteredPin.join(""));
-      setModalVisible(false);
-      setPinSet(true);
-      Keyboard.dismiss();
+      setPinStep("confirm");
+      setTimeout(() => confirmInputs.current[0]?.focus(), 100);
+      return;
     }
+
+    // Confirm step
+    if (confirmPin.join("") !== enteredPin.join("")) {
+      setPinError(true);
+      setConfirmPin(["", "", "", ""]);
+      confirmInputs.current[0]?.focus();
+      return;
+    }
+
+    await AsyncStorage.setItem(STORAGE_KEY_PIN, enteredPin.join(""));
+    setModalVisible(false);
+    setPinSet(true);
+    Keyboard.dismiss();
   };
 
   return (
@@ -115,6 +136,7 @@ export default function Settings() {
           }
         />
       </View>
+
       <View style={styles.warnSection}>
         <Text style={[styles.label, { textAlign: "center", width: "100%" }]}>
           ⚠️ {t("warnPinWorking")} ⚠️
@@ -122,54 +144,15 @@ export default function Settings() {
       </View>
 
       <View style={styles.langSection}>
-        <TouchableOpacity
-          style={styles.langBtn}
-          onPress={() => {
-            setLanguage("en");
-          }}
-        >
-          <Text style={styles.langIcon}>🇺🇸</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.langBtn}
-          onPress={() => {
-            setLanguage("de");
-          }}
-        >
-          <Text style={styles.langIcon}>🇩🇪</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.langBtn}
-          onPress={() => {
-            setLanguage("fr");
-          }}
-        >
-          <Text style={styles.langIcon}>🇫🇷</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.langBtn}
-          onPress={() => {
-            setLanguage("es");
-          }}
-        >
-          <Text style={styles.langIcon}>🇪🇸</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.langBtn}
-          onPress={() => {
-            setLanguage("it");
-          }}
-        >
-          <Text style={styles.langIcon}>🇮🇹</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.langBtn}
-          onPress={() => {
-            setLanguage("tr");
-          }}
-        >
-          <Text style={styles.langIcon}>🇹🇷</Text>
-        </TouchableOpacity>
+        {LANGUAGES.map(({ code, flag }) => (
+          <TouchableOpacity
+            key={code}
+            style={styles.langBtn}
+            onPress={() => setLanguage(code)}
+          >
+            <Text style={styles.langIcon}>{flag}</Text>
+          </TouchableOpacity>
+        ))}
       </View>
 
       <Modal
@@ -181,7 +164,7 @@ export default function Settings() {
       >
         <View style={styles.modalContainer}>
           <Text style={styles.modalTitle}>
-            {pinStep === "enter" ? "Enter new PIN" : "repeat PIN"}
+            {pinStep === "enter" ? "Enter new PIN" : "Repeat PIN"}
           </Text>
 
           <View style={styles.pinRow}>
@@ -189,14 +172,12 @@ export default function Settings() {
               (digit, index) => (
                 <TextInput
                   key={index}
-                  ref={
-                    pinStep === "enter" ? inputs[index] : confirmInputs[index]
-                  }
-                  style={[
-                    styles.pinInput,
-                    pinError == true && { borderColor: "red" },
-                    pinError == false && { borderColor: "transparent" },
-                  ]}
+                  ref={(ref) => {
+                    const targetRef =
+                      pinStep === "enter" ? inputs : confirmInputs;
+                    targetRef.current[index] = ref;
+                  }}
+                  style={[styles.pinInput, pinError && styles.pinInputError]}
                   keyboardType="number-pad"
                   secureTextEntry
                   maxLength={1}
@@ -205,7 +186,7 @@ export default function Settings() {
                     handlePinChange(text, index, pinStep === "confirm")
                   }
                 />
-              )
+              ),
             )}
           </View>
 
@@ -230,19 +211,6 @@ const getStyles = (colorPalette: typeof Colors.light) =>
       padding: 24,
       alignItems: "center",
       justifyContent: "flex-start",
-    },
-    logout: {
-      marginBottom: 24,
-      padding: 12,
-      backgroundColor: colorPalette.accent500,
-      borderRadius: 6,
-      width: "90%",
-    },
-    logoutText: {
-      color: colorPalette.text100,
-      fontSize: 24,
-      fontFamily: "PatrickHand",
-      textAlign: "center",
     },
     section: {
       flexDirection: "row",
@@ -273,19 +241,6 @@ const getStyles = (colorPalette: typeof Colors.light) =>
       fontSize: 16,
       fontWeight: "600",
     },
-    changePin: {
-      marginTop: 8,
-      backgroundColor: colorPalette.primary500,
-      width: "90%",
-      padding: 10,
-      borderRadius: 6,
-    },
-    changePinText: {
-      color: colorPalette.text900,
-      fontSize: 24,
-      fontFamily: "PatrickHand",
-      textAlign: "center",
-    },
     modalContainer: {
       backgroundColor: colorPalette.background100,
       padding: 24,
@@ -314,6 +269,9 @@ const getStyles = (colorPalette: typeof Colors.light) =>
       borderColor: "transparent",
       color: colorPalette.text900,
     },
+    pinInputError: {
+      borderColor: "red",
+    },
     saveButton: {
       backgroundColor: colorPalette.primary500,
       paddingVertical: 10,
@@ -327,13 +285,11 @@ const getStyles = (colorPalette: typeof Colors.light) =>
       fontFamily: "PatrickHand",
       textAlign: "center",
     },
-
     langBtn: {
       width: 50,
       aspectRatio: 1,
       backgroundColor: colorPalette.background200,
       borderRadius: 10,
-
       justifyContent: "center",
       alignItems: "center",
     },

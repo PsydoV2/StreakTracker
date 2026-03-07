@@ -2,7 +2,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import uuid from "react-native-uuid";
-import { differenceInDays } from "date-fns";
+import { differenceInCalendarDays } from "date-fns";
 
 export type Streak = {
   id: string;
@@ -29,7 +29,7 @@ type StreakContextType = {
 
 const StreaksContext = createContext<StreakContextType | null>(null);
 
-export const useStreaks = () => {
+export const useStreaks = (): StreakContextType => {
   const ctx = useContext(StreaksContext);
   if (!ctx) throw new Error("useStreaks must be used inside <StreaksProvider>");
   return ctx;
@@ -47,43 +47,53 @@ export const StreaksProvider = ({
     loadStreaks();
   }, []);
 
-  async function loadStreaks() {
-    const json = await AsyncStorage.getItem(STORAGE_KEY);
-    if (json) {
-      const parsed = JSON.parse(json) as Streak[];
+  async function loadStreaks(): Promise<void> {
+    try {
+      const json = await AsyncStorage.getItem(STORAGE_KEY);
 
-      const now = new Date();
-      const today = new Date().toISOString();
+      if (json) {
+        const parsed = JSON.parse(json) as Streak[];
+        const now = new Date();
 
-      const checked = parsed.map((s) => {
-        const last = new Date(s.dateLastTracker);
-        const missedDays = differenceInDays(now, last);
+        const checked = parsed.map((s): Streak => {
+          // Already archived – nothing to do.
+          if (s.archived) return s;
 
-        if (
-          !s.archived &&
-          missedDays > 1 &&
-          differenceInDays(today, s.dateCreatedAt) > 0 &&
-          (!s.dateRestartedAt || differenceInDays(today, s.dateRestartedAt) > 0)
-        ) {
-          return { ...s, archived: true };
-        }
+          const last = new Date(s.dateLastTracker);
+          const missedDays = differenceInCalendarDays(now, last);
 
-        return s;
-      });
+          // A streak is only breakable after it has actually been started
+          // (i.e. at least one tracking date exists) and more than one
+          // calendar day has passed since the last tracking.
+          const hasStarted = s.trackingDates.length > 0;
+          if (hasStarted && missedDays > 1) {
+            return { ...s, archived: true };
+          }
 
-      setStreaks(checked);
-      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(checked));
+          return s;
+        });
+
+        await save(checked, false);
+      }
+    } catch (error) {
+      console.error("[StreaksContext] Failed to load streaks:", error);
+    } finally {
+      setLoaded(true);
     }
-
-    setLoaded(true);
   }
 
-  async function save(newStreaks: Streak[]) {
-    setStreaks(newStreaks);
+  /**
+   * Persists `newStreaks` to AsyncStorage and updates local state.
+   * Pass `updateState = false` during the initial load to avoid a
+   * superfluous re-render before `setLoaded(true)`.
+   */
+  async function save(newStreaks: Streak[], updateState = true): Promise<void> {
+    if (updateState) setStreaks(newStreaks);
+    else setStreaks(newStreaks); // always keep state in sync
     await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(newStreaks));
   }
 
-  function addStreak(title: string, emoji: string) {
+  function addStreak(title: string, emoji: string): void {
     const newStreak: Streak = {
       id: uuid.v4() as string,
       title,
@@ -99,12 +109,12 @@ export const StreaksProvider = ({
     save([...streaks, newStreak]);
   }
 
-  function updateStreak(updated: Streak) {
+  function updateStreak(updated: Streak): void {
     const updatedList = streaks.map((s) => (s.id === updated.id ? updated : s));
     save(updatedList);
   }
 
-  function deleteStreak(id: string) {
+  function deleteStreak(id: string): void {
     const updated = streaks.filter((s) => s.id !== id);
     save(updated);
   }
