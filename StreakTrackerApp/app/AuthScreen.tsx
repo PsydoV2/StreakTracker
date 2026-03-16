@@ -16,6 +16,7 @@ import { useEffect, useRef, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Haptics from "expo-haptics";
 import { useTranslation } from "react-i18next";
+import { markPinVerified } from "@/src/pinSession";
 
 const STORAGE_KEY_PIN = "StreakTrackerPin";
 
@@ -41,6 +42,7 @@ export default function AuthScreen() {
           console.info("[AuthScreen] Stored PIN found:", pin !== null);
 
         if (!pin || pin.trim().length === 0) {
+          markPinVerified();
           router.replace("/");
         } else {
           setIsLoadingPin(false);
@@ -90,6 +92,7 @@ export default function AuthScreen() {
         await Haptics.notificationAsync(
           Haptics.NotificationFeedbackType.Success,
         );
+        markPinVerified();
         setIsCorrect(true);
         setTimeout(() => router.replace("/"), 300);
       } else {

@@ -1,13 +1,31 @@
-import { Stack } from "expo-router";
+import { Stack, router } from "expo-router";
 import { useColorScheme } from "react-native";
 import Colors from "@/constants/Colors";
 import { useTranslation } from "react-i18next";
+import { useEffect } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { isPinVerified } from "@/src/pinSession";
+
+const STORAGE_KEY_PIN = "StreakTrackerPin";
 
 export default function AppLayout() {
   const colorScheme = useColorScheme();
   const theme = Colors[colorScheme ?? "light"];
 
   const { t } = useTranslation();
+
+  // Guard: redirect to AuthScreen if a PIN is set and not yet verified this session.
+  // This runs even when the OS restores navigation state directly to a protected route,
+  // which is why the check in AuthScreen.tsx alone is not sufficient in production builds.
+  useEffect(() => {
+    if (isPinVerified()) return;
+
+    AsyncStorage.getItem(STORAGE_KEY_PIN).then((pin) => {
+      if (pin && pin.trim().length > 0) {
+        router.replace("/AuthScreen");
+      }
+    });
+  }, []);
 
   return (
     <Stack
