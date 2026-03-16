@@ -27,8 +27,8 @@ import { router } from "expo-router";
 const STORAGE_KEY_PIN = "StreakTrackerPin";
 const STORAGE_KEY_BIOMETRIC = "StreakTrackerBiometric";
 const STORAGE_KEY_ONBOARDED = "StreakTrackerOnboarded";
-const PRIVACY_URL = "https://sfalter.de/privacy";
-const IMPRINT_URL = "https://sfalter.de/imprint";
+const PRIVACY_URL = "https://streaktracker.sfalter.de/privacy";
+const IMPRINT_URL = "https://streaktracker.sfalter.de/imprint";
 
 type Language = "en" | "de" | "es" | "fr" | "it" | "tr" | "pt" | "ja";
 
