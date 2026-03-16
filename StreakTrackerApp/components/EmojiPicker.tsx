@@ -530,12 +530,13 @@ const getStyles = (colors: typeof Colors.light) =>
       marginBottom: 5,
     },
     tab: {
-      paddingHorizontal: 15,
-      paddingBottom: 10,
+      paddingHorizontal: 12,
+      paddingVertical: 6,
+      borderRadius: 8,
+      marginBottom: 4,
     },
     activeTab: {
-      borderBottomWidth: 2,
-      borderColor: colors.primary500,
+      backgroundColor: colors.primary500 + "22",
     },
     tabText: {
       fontSize: 22,

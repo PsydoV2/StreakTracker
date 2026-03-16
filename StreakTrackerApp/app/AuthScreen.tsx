@@ -6,6 +6,7 @@ import {
   Platform,
   StyleSheet,
   TextInput,
+  TouchableOpacity,
   TouchableWithoutFeedback,
   useColorScheme,
 } from "react-native";
@@ -15,10 +16,14 @@ import Colors from "@/constants/Colors";
 import { useEffect, useRef, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Haptics from "expo-haptics";
+import * as LocalAuthentication from "expo-local-authentication";
 import { useTranslation } from "react-i18next";
 import { markPinVerified } from "@/src/pinSession";
+import { FontAwesome6 } from "@expo/vector-icons";
 
 const STORAGE_KEY_PIN = "StreakTrackerPin";
+const STORAGE_KEY_BIOMETRIC = "StreakTrackerBiometric";
+const STORAGE_KEY_ONBOARDED = "StreakTrackerOnboarded";
 
 export default function AuthScreen() {
   const colorScheme = useColorScheme();
@@ -28,34 +33,92 @@ export default function AuthScreen() {
   const [digits, setDigits] = useState(["", "", "", ""]);
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
   const [isLoadingPin, setIsLoadingPin] = useState(true);
+  const [biometricAvailable, setBiometricAvailable] = useState(false);
+  const [biometricType, setBiometricType] = useState<"face" | "fingerprint">(
+    "fingerprint"
+  );
 
   const { t } = useTranslation();
-
-  // useRef array – stable across renders, no Rules-of-Hooks violation.
   const inputs = useRef<Array<TextInput | null>>([null, null, null, null]);
 
+  const navigateAfterAuth = () => {
+    router.replace("/");
+  };
+
   useEffect(() => {
-    const checkPin = async () => {
+    const init = async () => {
       try {
+        // 1. Onboarding check
+        const onboarded = await AsyncStorage.getItem(STORAGE_KEY_ONBOARDED);
+        if (!onboarded) {
+          router.replace("/OnboardingScreen");
+          return;
+        }
+
+        // 2. PIN check
         const pin = await AsyncStorage.getItem(STORAGE_KEY_PIN);
         if (__DEV__)
           console.info("[AuthScreen] Stored PIN found:", pin !== null);
 
         if (!pin || pin.trim().length === 0) {
           markPinVerified();
-          router.replace("/");
-        } else {
-          setIsLoadingPin(false);
+          navigateAfterAuth();
+          return;
         }
+
+        // 3. Biometric check
+        const biometricEnabled =
+          await AsyncStorage.getItem(STORAGE_KEY_BIOMETRIC);
+        if (biometricEnabled === "true") {
+          const hasHardware = await LocalAuthentication.hasHardwareAsync();
+          const isEnrolled = await LocalAuthentication.isEnrolledAsync();
+          if (hasHardware && isEnrolled) {
+            const types =
+              await LocalAuthentication.supportedAuthenticationTypesAsync();
+            const hasFace = types.includes(
+              LocalAuthentication.AuthenticationType.FACIAL_RECOGNITION
+            );
+            setBiometricType(hasFace ? "face" : "fingerprint");
+            setBiometricAvailable(true);
+          }
+        }
+
+        setIsLoadingPin(false);
       } catch (error) {
-        console.error("[AuthScreen] Failed to read PIN:", error);
-        // Fail open: if storage is broken, skip the lock screen.
+        console.error("[AuthScreen] Init error:", error);
         router.replace("/");
       }
     };
 
-    checkPin();
+    init();
   }, []);
+
+  // Auto-trigger biometric once confirmed available
+  useEffect(() => {
+    if (!isLoadingPin && biometricAvailable) {
+      triggerBiometric();
+    }
+  }, [isLoadingPin, biometricAvailable]);
+
+  const triggerBiometric = async () => {
+    try {
+      const result = await LocalAuthentication.authenticateAsync({
+        promptMessage: t("biometricPrompt"),
+        cancelLabel: t("cancel"),
+        disableDeviceFallback: true,
+      });
+
+      if (result.success) {
+        await Haptics.notificationAsync(
+          Haptics.NotificationFeedbackType.Success
+        );
+        markPinVerified();
+        navigateAfterAuth();
+      }
+    } catch (error) {
+      console.error("[AuthScreen] Biometric auth error:", error);
+    }
+  };
 
   const handleChange = (text: string, index: number) => {
     const newDigits = [...digits];
@@ -90,15 +153,14 @@ export default function AuthScreen() {
 
       if (entered === stored) {
         await Haptics.notificationAsync(
-          Haptics.NotificationFeedbackType.Success,
+          Haptics.NotificationFeedbackType.Success
         );
         markPinVerified();
         setIsCorrect(true);
-        setTimeout(() => router.replace("/"), 300);
+        setTimeout(navigateAfterAuth, 300);
       } else {
         await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
         setIsCorrect(false);
-        // Reset digits so the user can try again immediately.
         setTimeout(() => {
           setDigits(["", "", "", ""]);
           setIsCorrect(null);
@@ -156,6 +218,21 @@ export default function AuthScreen() {
               />
             ))}
           </View>
+
+          {biometricAvailable && (
+            <TouchableOpacity
+              style={styles.biometricBtn}
+              onPress={triggerBiometric}
+              activeOpacity={0.7}
+            >
+              <FontAwesome6
+                name={biometricType === "face" ? "face-smile" : "fingerprint"}
+                size={20}
+                color={colorPalette.primary500}
+              />
+              <Text style={styles.biometricLabel}>{t("biometricAuth")}</Text>
+            </TouchableOpacity>
+          )}
         </View>
       </TouchableWithoutFeedback>
     </KeyboardAvoidingView>
@@ -175,6 +252,11 @@ const getStyles = (colorPalette: typeof Colors.light) =>
       justifyContent: "center",
       alignItems: "center",
     },
+    logo: {
+      width: 200,
+      height: 200,
+      marginBottom: 32,
+    },
     title: {
       fontSize: 48,
       textAlign: "center",
@@ -188,6 +270,13 @@ const getStyles = (colorPalette: typeof Colors.light) =>
       marginBottom: 24,
       color: colorPalette.text900,
       fontFamily: "Roboto",
+    },
+    inputCon: {
+      flexDirection: "row",
+      justifyContent: "space-evenly",
+      width: "100%",
+      maxWidth: 200,
+      marginBottom: 24,
     },
     input: {
       borderWidth: 1,
@@ -210,16 +299,20 @@ const getStyles = (colorPalette: typeof Colors.light) =>
       borderColor: "red",
       borderWidth: 2,
     },
-    inputCon: {
+    biometricBtn: {
       flexDirection: "row",
-      justifyContent: "space-evenly",
-      width: "100%",
-      maxWidth: 200,
-      marginBottom: 12,
+      alignItems: "center",
+      gap: 8,
+      paddingVertical: 12,
+      paddingHorizontal: 20,
+      borderRadius: 12,
+      borderWidth: 2,
+      borderColor: colorPalette.primary500 + "40",
+      backgroundColor: colorPalette.primary500 + "0E",
     },
-    logo: {
-      width: 200,
-      height: 200,
-      marginBottom: 32,
+    biometricLabel: {
+      fontFamily: "Roboto",
+      fontSize: 15,
+      color: colorPalette.primary500,
     },
   });

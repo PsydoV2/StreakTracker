@@ -2,96 +2,107 @@
 
 **Build better habits – one day at a time.**
 
-StreakTracker ist eine minimalistische und motivierende App, um persönliche Gewohnheiten (Streaks) zu verfolgen.
-Egal ob Lesen, Sport oder Meditation – bleib am Ball und feiere jeden Tag deinen Fortschritt.
+StreakTracker is a minimalist and motivating app for tracking personal habits (streaks).
+Whether it's reading, working out, or meditating – stay consistent and celebrate every day of progress.
 
 ---
 
 ## 🚀 Features
 
-### ✅ Unbegrenzte Streaks
+### ✅ Unlimited Streaks
 
-Erstelle beliebig viele Gewohnheiten mit eigenem Titel und Emoji. Jede Aktivität wird als **StreakElement** verwaltet.
+Create as many habits as you want with a custom title and emoji. Each habit is managed as a **StreakElement**.
 
-### 📅 Fortschrittsübersicht
+### 📅 Progress Overview
 
-Ein integriertes **StreakDetailsPopup** zeigt deinen Fortschritt als Kalender-Heatmap sowie:
+The built-in **StreakDetailsPopup** shows your progress as a calendar heatmap along with:
 
-- aktuelle Streak-Länge
-- persönlichen Rekord
-- Aktivitätsverlauf
+- current streak length
+- personal best
+- total days tracked
 
-### 🎉 Belohnungen
+### 🎉 Rewards
 
-Nach jedem erfolgreichen Tag sorgt eine animierte **Konfetti-Explosion** für Extra-Motivation.
+After every successful day, an animated **confetti explosion** provides extra motivation.
 
-### 📦 Archivieren & Reaktivieren
+### 📦 Archive & Restore
 
-Streaks können pausiert oder archiviert werden, ohne verloren zu gehen – perfekt für saisonale Ziele oder Pausen.
+Streaks can be paused or archived without losing data – perfect for seasonal goals or breaks.
 
-### 🔒 PIN-Schutz
+### 🔒 PIN & Biometric Protection
 
-Optionaler **vierstelliger PIN**, um deine Streaks zu schützen (lokal in `AsyncStorage` gespeichert).
+Optional **4-digit PIN** to protect your streaks (stored locally in `AsyncStorage`).
+**Face ID or fingerprint** can additionally be enabled as a fast unlock method.
+
+### 📱 Onboarding
+
+On first launch, a **4-page onboarding** walks you through the app's key features.
+The onboarding can be restarted at any time from the settings.
 
 ### 🌗 Dark & Light Mode
 
-Automatische Anpassung an das System-Farbschema mit modernem, reaktionsfähigem Design.
+Automatic adaptation to the system color scheme with a modern, responsive design.
 
-### 🌍 Mehrsprachig
+### 🌍 Multilingual
 
-Unterstützt mehrere Sprachen (u. a. 🇺🇸 Englisch, 🇩🇪 Deutsch, 🇫🇷 Französisch, 🇪🇸 Spanisch, 🇮🇹 Italienisch, 🇹🇷 Türkisch).
+Supports 8 languages:
+🇺🇸 English · 🇩🇪 German · 🇫🇷 French · 🇪🇸 Spanish · 🇮🇹 Italian · 🇹🇷 Turkish · 🇵🇹 Portuguese · 🇯🇵 Japanese
 
 ---
 
 ## 🧠 Tech Stack
 
-| Kategorie             | Technologien                                                                                                                                                                   |
-| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Framework             | [Expo](https://expo.dev/) + [React Native](https://reactnative.dev/)                                                                                                           |
-| State Management      | React Context (`StreaksContext`, `LanguageContext`)                                                                                                                            |
-| Speicher              | AsyncStorage (lokal, offline-fähig)                                                                                                                                            |
-| UI & Styling          | Themed Components, [@gorhom/bottom-sheet](https://github.com/gorhom/react-native-bottom-sheet), [react-native-modal](https://github.com/react-native-modal/react-native-modal) |
-| Feedback & Animation  | [expo-haptics](https://docs.expo.dev/versions/latest/sdk/haptics/), [react-native-confetti-cannon](https://github.com/Vydia/react-native-confetti-cannon)                      |
-| Internationalisierung | [react-i18next](https://react.i18next.com/)                                                                                                                                    |
+| Category       | Technologies                                                                                                                                                                   |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Framework      | [Expo](https://expo.dev/) + [React Native](https://reactnative.dev/)                                                                                                           |
+| Routing        | [expo-router](https://expo.github.io/router/) (file-based)                                                                                                                     |
+| State          | React Context (`StreaksContext`, `LanguageContext`)                                                                                                                             |
+| Storage        | AsyncStorage (local, offline-first)                                                                                                                                            |
+| UI & Styling   | Themed Components, [@gorhom/bottom-sheet](https://github.com/gorhom/react-native-bottom-sheet), [react-native-modal](https://github.com/react-native-modal/react-native-modal) |
+| Feedback       | [expo-haptics](https://docs.expo.dev/versions/latest/sdk/haptics/), [react-native-confetti-cannon](https://github.com/Vydia/react-native-confetti-cannon)                      |
+| Biometrics     | [expo-local-authentication](https://docs.expo.dev/versions/latest/sdk/local-authentication/) (Face ID / Fingerprint)                                                           |
+| i18n           | [react-i18next](https://react.i18next.com/)                                                                                                                                    |
 
 ---
 
 ## 📲 Screens / Components
 
-| Datei                     | Beschreibung                                                               |
-| ------------------------- | -------------------------------------------------------------------------- |
-| `index.tsx`               | Hauptscreen – aktive Streaks anzeigen, neue erstellen, Fortschritt tracken |
-| `archive.tsx`             | Archivierte Streaks mit Reaktivierungs-Funktion                            |
-| `settings.tsx`            | Sprache & PIN-Einstellungen                                                |
-| `StreakElement.tsx`       | Einzelne Streak-Karte mit Aktionen (Track, Archivieren, Löschen, Details)  |
-| `StreakDetailsPopup.tsx`  | Popup mit Kalenderübersicht & Rekordanzeige                                |
-| `AddStreakElementBtn.tsx` | Schwebender Button zum schnellen Erstellen einer neuen Streak              |
+| File                      | Description                                                              |
+| ------------------------- | ------------------------------------------------------------------------ |
+| `OnboardingScreen.tsx`    | 4-page welcome guide on first app launch                                 |
+| `AuthScreen.tsx`          | PIN or biometric lock screen                                             |
+| `index.tsx`               | Main screen – view active streaks, create new ones, track progress       |
+| `archive.tsx`             | Archived streaks with restore functionality                              |
+| `settings.tsx`            | Security, language & app info                                            |
+| `StreakElement.tsx`        | Streak card with actions (track, archive, delete, details)               |
+| `StreakDetailsPopup.tsx`   | Bottom sheet with heatmap, stats & personal best                         |
+| `AddStreakElementBtn.tsx`  | Floating button for quickly creating a new streak                        |
 
 ---
 
 ## 🛠️ Installation
 
 ```bash
-# Repository klonen
-git clone https://github.com/DeinGitHubUser/StreakTracker.git
-cd StreakTracker
+# Clone the repository
+git clone https://github.com/PsydoV2/StreakTracker.git
+cd StreakTracker/StreakTrackerApp
 
-# Abhängigkeiten installieren
+# Install dependencies
 npm install
 
-# App starten (mit Expo)
-npm start
+# Start the app (with Expo)
+npx expo start
 ```
 
-Öffne anschließend den QR-Code mit der **Expo Go App** auf deinem Smartphone.
+Scan the QR code with the **Expo Go** app on your smartphone.
 
 ---
 
-## 📦 Daten & Sicherheit
+## 📦 Data & Privacy
 
-- Alle Daten (Streaks, PIN, Sprache) werden **lokal** gespeichert.
-- Keine Cloud, keine Registrierung, kein Tracking.
-- Ideal für Nutzer, die Wert auf **Privatsphäre** und **Offline-Funktionalität** legen.
+- All data (streaks, PIN, language) is stored **locally** on the device.
+- No cloud, no account, no tracking.
+- Ideal for users who value **privacy** and **offline functionality**.
 
 ---
 
@@ -101,8 +112,17 @@ npm start
 
 ---
 
-## 🧑‍💻 Autor
+## 📁 Project Structure
+
+```
+StreakTracker/
+├── StreakTrackerApp/    # React Native / Expo App
+└── StreakTrackerWeb/    # Next.js Landing Page
+```
+
+---
+
+## 🧑‍💻 Author
 
 **Sebastian Falter** <br>
-💼 Fachinformatiker für Anwendungsentwicklung <br>
 🌍 [sfalter.de](https://sfalter.de) <br>

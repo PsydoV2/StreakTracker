@@ -1,40 +1,77 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/pages/api-reference/create-next-app).
+# 🌐 StreakTracker – Web
 
-## Getting Started
+**Next.js landing page** for [StreakTracker](https://streaktracker.sfalter.de) – a habit tracking app built with React Native / Expo.
 
-First, run the development server:
+---
+
+## 📄 Pages
+
+| Route             | Description                                         |
+| ----------------- | --------------------------------------------------- |
+| `/`               | Landing page with feature sections and app preview  |
+| `/becomeTester`   | Beta tester sign-up page                            |
+| `/privacy`        | Privacy policy                                      |
+| `/imprint`        | Imprint / legal notice                              |
+
+---
+
+## 🧩 Components
+
+| Component           | Description                                        |
+| ------------------- | -------------------------------------------------- |
+| `Hero`              | Header section with app name, tagline, CTA button  |
+| `StreakSection`     | Explains the streak tracking concept               |
+| `DetailSection`     | Highlights the heatmap & stats overview            |
+| `ArchiveSection`    | Shows the archive & restore feature                |
+| `PinSection`        | Showcases PIN & biometric protection               |
+| `OptionSection`     | Covers dark/light mode and language support        |
+| `ThemeSection`      | Visual theme showcase                              |
+| `BecomeTester`      | CTA section linking to beta tester sign-up         |
+| `Navbar`            | Top navigation bar                                 |
+| `Footer`            | Footer with links and author info                  |
+
+---
+
+## 🧠 Tech Stack
+
+| Category     | Technology                        |
+| ------------ | --------------------------------- |
+| Framework    | [Next.js](https://nextjs.org/)    |
+| Language     | TypeScript                        |
+| Styling      | CSS Modules / Tailwind            |
+| Animation    | Framer Motion                     |
+| Theming      | Custom ThemeProvider (dark/light) |
+
+---
+
+## 🚀 Getting Started
 
 ```bash
+# Install dependencies
+npm install
+
+# Run development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+---
 
-[API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+## 🏗️ Build & Deploy
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) instead of React pages.
+```bash
+# Production build
+npm run build
 
-This project uses [`next/font`](https://nextjs.org/docs/pages/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+# Start production server
+npm start
+```
 
-## Learn More
+The site is deployed at 👉 [https://streaktracker.sfalter.de](https://streaktracker.sfalter.de)
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn-pages-router) - an interactive Next.js tutorial.
+## 🧑‍💻 Author
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/pages/building-your-application/deploying) for more details.
+**Sebastian Falter** · [sfalter.de](https://sfalter.de)

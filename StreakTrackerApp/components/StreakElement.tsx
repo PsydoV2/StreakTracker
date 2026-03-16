@@ -214,8 +214,8 @@ const getStyles = (colors: typeof Colors.light) =>
   StyleSheet.create({
     container: {
       width: "95%",
-      height: 130,
-      backgroundColor: "red",
+      minHeight: 130,
+      backgroundColor: colors.background200,
       overflow: "hidden",
 
       margin: "auto",
@@ -224,7 +224,7 @@ const getStyles = (colors: typeof Colors.light) =>
 
       borderWidth: 2,
       borderColor: colors.background300,
-      borderRadius: 10,
+      borderRadius: 12,
     },
 
     row: {
@@ -276,7 +276,7 @@ const getStyles = (colors: typeof Colors.light) =>
 
       borderWidth: 2,
       borderColor: colors.accent400,
-      borderRadius: 5,
+      borderRadius: 10,
 
       justifyContent: "center",
       alignItems: "center",
@@ -292,7 +292,7 @@ const getStyles = (colors: typeof Colors.light) =>
 
       borderWidth: 2,
       borderColor: colors.primary500,
-      borderRadius: 5,
+      borderRadius: 10,
 
       justifyContent: "center",
       alignItems: "center",

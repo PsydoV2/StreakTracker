@@ -3,7 +3,7 @@ import i18n from "i18next";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getLocales } from "expo-localization";
 
-type Language = "en" | "de" | "es" | "fr" | "it" | "tr";
+type Language = "en" | "de" | "es" | "fr" | "it" | "tr" | "pt" | "ja";
 
 type LanguageContextType = {
   language: Language;

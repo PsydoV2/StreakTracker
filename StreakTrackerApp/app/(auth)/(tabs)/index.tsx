@@ -8,10 +8,12 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import ConfettiCannon from "react-native-confetti-cannon";
 import { useFocusEffect } from "expo-router";
 import { updateEveningReminder } from "@/src/utils/NotificationManager";
+import { useTranslation } from "react-i18next";
 
 export default function TabOneScreen() {
   const { streaks, loaded, addStreak, updateStreak, deleteStreak } =
     useStreaks();
+  const { t } = useTranslation();
 
   const [showConfetti, setShowConfetti] = useState(false);
   const confettiTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -49,13 +51,16 @@ export default function TabOneScreen() {
     confettiTimer.current = setTimeout(() => setShowConfetti(false), 3000);
   };
 
+  const activeStreaks = loaded ? streaks.filter((s) => !s.archived) : [];
+
   return (
     <View style={styles.container}>
+      {loaded && activeStreaks.length === 0 && (
+        <Text style={styles.emptyHint}>{t("emptyStateActive")}</Text>
+      )}
       <ScrollView showsVerticalScrollIndicator={false}>
         {loaded &&
-          streaks
-            .filter((s) => !s.archived)
-            .map((streak) => (
+          activeStreaks.map((streak) => (
               <StreakElement
                 key={streak.id}
                 {...streak}
@@ -90,5 +95,13 @@ export default function TabOneScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  emptyHint: {
+    marginTop: 20,
+    opacity: 0.6,
+    fontFamily: "PatrickHand",
+    fontSize: 22,
+    width: "100%",
+    textAlign: "center",
   },
 });

@@ -5,9 +5,11 @@ import StreakElement from "@/components/StreakElement";
 import { useStreaks } from "@/src/context/StreaksContext";
 import { useEffect, useRef, useState } from "react";
 import ConfettiCannon from "react-native-confetti-cannon";
+import { useTranslation } from "react-i18next";
 
 export default function ArchiveScreen() {
   const { streaks, loaded, updateStreak, deleteStreak } = useStreaks();
+  const { t } = useTranslation();
 
   const [showConfetti, setShowConfetti] = useState(false);
   const confettiTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -30,7 +32,7 @@ export default function ArchiveScreen() {
   return (
     <View style={styles.container}>
       {loaded && archivedStreaks.length === 0 && (
-        <Text style={styles.emptyHint}>No archived streaks yet.</Text>
+        <Text style={styles.emptyHint}>{t("noArchivedStreaksYet")}</Text>
       )}
 
       <ScrollView showsVerticalScrollIndicator={false}>

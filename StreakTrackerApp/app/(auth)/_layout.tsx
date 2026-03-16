@@ -15,8 +15,6 @@ export default function AppLayout() {
   const { t } = useTranslation();
 
   // Guard: redirect to AuthScreen if a PIN is set and not yet verified this session.
-  // This runs even when the OS restores navigation state directly to a protected route,
-  // which is why the check in AuthScreen.tsx alone is not sufficient in production builds.
   useEffect(() => {
     if (isPinVerified()) return;
 
@@ -39,7 +37,18 @@ export default function AppLayout() {
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       <Stack.Screen
         name="settings"
-        options={{ presentation: "modal", title: t("settings") }}
+        options={{
+          presentation: "modal",
+          title: t("settings"),
+          headerTitleStyle: {
+            fontFamily: "PatrickHand",
+            fontSize: 26,
+          },
+          headerStyle: {
+            backgroundColor: theme.background100,
+          },
+          headerTintColor: theme.text900,
+        }}
       />
     </Stack>
   );

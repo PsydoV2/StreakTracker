@@ -2,7 +2,7 @@
   "expo": {
     "name": "StreakTracker",
     "slug": "streaktracker",
-    "version": "1.5.0",
+    "version": "1.6.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "streaktracker",
@@ -15,7 +15,7 @@
     "updates": {
       "url": "https://u.expo.dev/56c57319-8317-4119-aa8b-d27c4c6acbd2"
     },
-    "runtimeVersion": "1.5.0",
+    "runtimeVersion": "1.6.0",
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true
@@ -36,7 +36,13 @@
       "expo-router",
       "expo-web-browser",
       "expo-secure-store",
-      "expo-localization"
+      "expo-localization",
+      [
+        "expo-local-authentication",
+        {
+          "faceIDPermission": "StreakTracker uses Face ID to protect your data."
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true

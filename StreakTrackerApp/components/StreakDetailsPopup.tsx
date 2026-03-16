@@ -6,8 +6,9 @@ import {
   FlatList,
   useColorScheme,
   Dimensions,
+  TouchableOpacity,
 } from "react-native";
-import { BottomSheetModal, BottomSheetView } from "@gorhom/bottom-sheet";
+import { BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import Colors from "@/constants/Colors";
 import { FontAwesome6 } from "@expo/vector-icons";
 import { format } from "date-fns";
@@ -20,7 +21,8 @@ interface Props {
 }
 
 const NUM_COLUMNS = 14;
-const CELL_SIZE = Math.floor(Dimensions.get("window").width / NUM_COLUMNS) - 10;
+const SCREEN_WIDTH = Dimensions.get("window").width;
+const CELL_SIZE = Math.floor((SCREEN_WIDTH - 32) / NUM_COLUMNS) - 4;
 
 const StreakDetailsPopup = forwardRef<BottomSheetModal, Props>(
   ({ streakCount, record, trackingDates }, ref) => {
@@ -31,7 +33,7 @@ const StreakDetailsPopup = forwardRef<BottomSheetModal, Props>(
 
     const { t } = useTranslation();
 
-    const totalDays = 14 * 12;
+    const totalDays = NUM_COLUMNS * 12;
     const dateList = Array.from({ length: totalDays }, (_, i) => {
       const d = new Date(today);
       d.setDate(today.getDate() - i);
@@ -39,6 +41,8 @@ const StreakDetailsPopup = forwardRef<BottomSheetModal, Props>(
     });
 
     const safeDates = trackingDates ?? [];
+    const totalTracked = safeDates.length;
+
     const trackedSet = new Set(
       safeDates.map((d) => format(new Date(d), "yyyy-MM-dd"))
     );
@@ -46,14 +50,17 @@ const StreakDetailsPopup = forwardRef<BottomSheetModal, Props>(
     const renderItem = ({ item }: { item: Date }) => {
       const dateKey = format(item, "yyyy-MM-dd");
       const tracked = trackedSet.has(dateKey);
+      const isToday = dateKey === format(today, "yyyy-MM-dd");
 
       return (
         <View
           style={[
             styles.cell,
-            {
-              backgroundColor: tracked ? theme.primary400 : theme.background100,
-            },
+            tracked
+              ? styles.cellTracked
+              : isToday
+                ? styles.cellToday
+                : styles.cellEmpty,
           ]}
         />
       );
@@ -62,39 +69,98 @@ const StreakDetailsPopup = forwardRef<BottomSheetModal, Props>(
     return (
       <BottomSheetModal
         ref={ref}
-        snapPoints={["75%"]}
+        snapPoints={["78%"]}
         index={0}
         backgroundStyle={{ backgroundColor: theme.background200 }}
-        style={{ borderRadius: 50 }}
-        handleIndicatorStyle={{ backgroundColor: theme.background900 }}
+        handleIndicatorStyle={{
+          backgroundColor: theme.background500,
+          width: 40,
+        }}
       >
-        <BottomSheetView style={styles.container}>
+        <BottomSheetScrollView
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+        >
+          {/* ── Header ── */}
           <View style={styles.header}>
-            <FontAwesome6 name="calendar-alt" style={styles.headerIcon} />
+            <View style={styles.headerIconWrap}>
+              <FontAwesome6
+                name="fire-flame-curved"
+                size={22}
+                color={theme.accent500}
+              />
+            </View>
             <Text style={styles.headerText}>{t("streakOverview")}</Text>
           </View>
 
+          {/* ── Stats row ── */}
           <View style={styles.statsRow}>
-            <View style={styles.statsContainer}>
-              <FontAwesome6 name="fire-flame-curved" style={styles.statIcon} />
-              <Text style={styles.statText}>{streakCount}</Text>
+            <View style={styles.statCard}>
+              <Text style={styles.statNumber}>{streakCount}</Text>
+              <View style={styles.statLabelRow}>
+                <FontAwesome6
+                  name="fire-flame-curved"
+                  size={11}
+                  color={theme.accent500}
+                  style={{ marginRight: 4 }}
+                />
+                <Text style={styles.statLabel}>{t("currentStreak")}</Text>
+              </View>
             </View>
-            <View style={styles.statsContainer}>
-              <FontAwesome6 name="medal" style={styles.statIcon} />
-              <Text style={styles.statText}>{record}</Text>
+
+            <View style={styles.statDivider} />
+
+            <View style={styles.statCard}>
+              <Text style={styles.statNumber}>{record}</Text>
+              <View style={styles.statLabelRow}>
+                <FontAwesome6
+                  name="medal"
+                  size={11}
+                  color={theme.accent500}
+                  style={{ marginRight: 4 }}
+                />
+                <Text style={styles.statLabel}>{t("personalBest")}</Text>
+              </View>
+            </View>
+
+            <View style={styles.statDivider} />
+
+            <View style={styles.statCard}>
+              <Text style={styles.statNumber}>{totalTracked}</Text>
+              <View style={styles.statLabelRow}>
+                <FontAwesome6
+                  name="calendar-check"
+                  size={11}
+                  color={theme.accent500}
+                  style={{ marginRight: 4 }}
+                />
+                <Text style={styles.statLabel}>{t("daysTracked")}</Text>
+              </View>
             </View>
           </View>
 
-          <Text style={styles.timeSpanText}>{t("timeSpanText")}</Text>
-          <FlatList
-            data={dateList}
-            keyExtractor={(item) => item.toISOString()}
-            renderItem={renderItem}
-            numColumns={NUM_COLUMNS}
-            scrollEnabled={false}
-            contentContainerStyle={styles.grid}
-          />
-        </BottomSheetView>
+          {/* ── Heatmap ── */}
+          <View style={styles.heatmapSection}>
+            <Text style={styles.sectionLabel}>{t("timeSpanText")}</Text>
+            <FlatList
+              data={dateList}
+              keyExtractor={(item) => item.toISOString()}
+              renderItem={renderItem}
+              numColumns={NUM_COLUMNS}
+              scrollEnabled={false}
+              contentContainerStyle={styles.grid}
+            />
+
+            {/* Legend */}
+            <View style={styles.legend}>
+              <View style={[styles.legendCell, styles.cellEmpty]} />
+              <Text style={styles.legendText}>{t("noActivity")}</Text>
+              <View style={styles.legendSpacer} />
+              <View style={[styles.legendCell, styles.cellTracked]} />
+              <Text style={styles.legendText}>{t("tracked")}</Text>
+            </View>
+          </View>
+        </BottomSheetScrollView>
       </BottomSheetModal>
     );
   }
@@ -104,73 +170,125 @@ export default StreakDetailsPopup;
 
 const getStyles = (colors: typeof Colors.light) =>
   StyleSheet.create({
-    container: {
-      alignItems: "center",
+    scrollContent: {
+      paddingHorizontal: 16,
+      paddingBottom: 32,
     },
 
+    // Header
     header: {
-      width: "100%",
       flexDirection: "row",
-
+      alignItems: "center",
+      gap: 12,
+      marginTop: 4,
+      marginBottom: 20,
+      paddingHorizontal: 4,
+    },
+    headerIconWrap: {
+      width: 40,
+      height: 40,
+      borderRadius: 12,
+      backgroundColor: colors.accent500 + "18",
       justifyContent: "center",
       alignItems: "center",
-      gap: 16,
-      marginBottom: 8,
-      marginTop: 8,
-    },
-    headerIcon: {
-      fontSize: 30,
-      color: colors.text900,
     },
     headerText: {
-      fontSize: 34,
+      fontSize: 28,
       color: colors.text900,
       fontFamily: "PatrickHand",
     },
 
+    // Stats
     statsRow: {
-      width: "100%",
       flexDirection: "row",
-      justifyContent: "space-evenly",
-      marginTop: 16,
-      marginBottom: 16,
-    },
-    statsContainer: {
-      flexDirection: "row",
-      height: 100,
-      width: "40%",
       backgroundColor: colors.background100,
-      borderRadius: 20,
-
-      justifyContent: "center",
+      borderRadius: 16,
+      marginBottom: 20,
+      overflow: "hidden",
+    },
+    statCard: {
+      flex: 1,
       alignItems: "center",
-      gap: 16,
+      paddingVertical: 16,
+      paddingHorizontal: 4,
     },
-    statIcon: {
-      color: colors.accent500,
-      fontSize: 30,
-    },
-    statText: {
-      fontSize: 30,
+    statNumber: {
+      fontSize: 34,
       fontFamily: "PatrickHand",
       color: colors.text900,
+      lineHeight: 38,
+    },
+    statLabelRow: {
+      flexDirection: "row",
+      alignItems: "center",
+      marginTop: 4,
+    },
+    statLabel: {
+      fontSize: 11,
+      fontFamily: "Roboto",
+      color: colors.text700,
+      textAlign: "center",
+    },
+    statDivider: {
+      width: StyleSheet.hairlineWidth,
+      backgroundColor: colors.background300,
+      marginVertical: 12,
     },
 
+    // Heatmap
+    heatmapSection: {
+      backgroundColor: colors.background100,
+      borderRadius: 16,
+      padding: 14,
+    },
+    sectionLabel: {
+      fontSize: 13,
+      fontFamily: "Roboto",
+      fontWeight: "600",
+      color: colors.text700,
+      marginBottom: 10,
+      letterSpacing: 0.3,
+    },
     grid: {
-      marginBottom: 30,
+      gap: 0,
     },
     cell: {
+      width: CELL_SIZE,
       height: CELL_SIZE,
-      aspectRatio: 1,
-      borderRadius: 5,
-      margin: 4,
+      borderRadius: 3,
+      margin: 2,
+    },
+    cellEmpty: {
+      backgroundColor: colors.background300,
+    },
+    cellTracked: {
+      backgroundColor: colors.primary400,
+    },
+    cellToday: {
+      backgroundColor: colors.background400,
+      borderWidth: 1,
+      borderColor: colors.primary500,
     },
 
-    timeSpanText: {
+    // Legend
+    legend: {
+      flexDirection: "row",
+      alignItems: "center",
+      marginTop: 12,
+      justifyContent: "flex-end",
+    },
+    legendCell: {
+      width: 12,
+      height: 12,
+      borderRadius: 3,
+    },
+    legendText: {
+      fontSize: 11,
+      fontFamily: "Roboto",
       color: colors.text700,
-      fontFamily: "PatrickHand",
-      width: "91%",
-      textAlign: "left",
-      fontSize: 20,
+      marginLeft: 4,
+    },
+    legendSpacer: {
+      width: 16,
     },
   });

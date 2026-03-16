@@ -33,7 +33,7 @@ const getStyles = (colorPalette: typeof Colors.light) =>
       alignItems: "center",
       height: 50,
       width: 50,
-      borderRadius: 10,
+      borderRadius: 16,
       position: "absolute",
       bottom: 20,
       right: 20,
