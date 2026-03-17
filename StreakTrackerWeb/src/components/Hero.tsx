@@ -68,7 +68,7 @@ export default function Hero() {
           className={"secondaryButton patrick-hand-regular"}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
-          href="#firstFeature"
+          href="#theme"
         >
           Explore Features
         </motion.a>

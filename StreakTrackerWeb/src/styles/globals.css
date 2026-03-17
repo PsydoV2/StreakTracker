@@ -166,6 +166,9 @@ body {
   overflow-x: hidden;
   background-color: var(--background-100);
   scroll-behavior: smooth;
+  /* D3: Firefox scrollbar hidden */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
 body {
@@ -177,9 +180,15 @@ body {
 }
 
 section {
-  margin-bottom: 4rem;
+  /* C5: reduced section spacing to match app rhythm */
+  margin-bottom: 3rem;
   min-width: 100vw;
   min-height: 100vh;
+}
+
+.legalPage section {
+  min-height: 0;
+  min-width: 0;
 }
 
 ::-webkit-scrollbar {
@@ -197,24 +206,26 @@ a {
   text-decoration: none;
 }
 
+/* T1/C3: border-radius 12px matches app (was 5px) */
 .motionButton {
   margin-top: 2rem;
-  padding: 0.5rem 1.5rem;
+  padding: 0 1.5rem;
   border: none;
-  border-radius: 5px;
+  border-radius: 12px;
   cursor: pointer;
   transition: background-color 0.2s ease-in-out;
   color: white;
-  width: 270px;
-  height: 50px;
+  width: 100%;
+  max-width: 420px;
+  height: 52px;
   font-size: larger;
   font-family: "Patrick Hand", cursive;
-  font-size: larger;
+  white-space: nowrap;
 
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 1rem;
+  gap: 0.75rem;
   z-index: 2;
 }
 
@@ -226,54 +237,69 @@ a {
   background-color: var(--accent-500);
 }
 
-/* -------------- Navbar -------------- */
+/* -------------- Navbar (N1: redesigned to match app aesthetic) -------------- */
 
 .navbar {
   position: fixed;
-  top: 20px;
-  left: 50%; /* Fixpunkt in die Mitte setzen   */
-  transform: translateX(-50%); /* um 50 % der  Eigenbreite zurückschieben */
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
   width: 95%;
   max-width: 1000px;
-  height: 80px;
+  height: 70px;
+  z-index: 100;
 
-  border: 2px solid var(--background-300);
-  border-radius: 5px;
-  backdrop-filter: blur(10px);
+  /* N1: solid background matching app color tokens, glassy effect */
+  background-color: var(--background-100);
+  border: 1.5px solid var(--background-300);
+  border-radius: 14px;
+  backdrop-filter: blur(12px);
 
   display: flex;
-  justify-content: space-evenly;
+  justify-content: space-between;
   align-items: center;
+  padding: 0 1.5rem;
 }
 
-.navbar .logo {
+/* N1: Logo area */
+.navLogo {
   display: flex;
   align-items: center;
-  margin-right: 1rem;
+  gap: 0.6rem;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
 }
 
-.navbar .navLink {
-  width: 80px;
-  text-align: center;
-  color: var(--accent-700);
+.navBrand {
+  font-size: 1.2rem;
+  color: var(--text-900);
+}
+
+/* N3: Centered nav links */
+.navLinks {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
 }
 
 .navbar .navLink {
   position: relative;
-  font-size: 0.95rem;
+  font-size: 1rem;
   text-decoration: none;
-  color: var(--fg);
-  opacity: 0.9;
-  transition: opacity 0.2s ease;
-
-  color: var(--accent-700);
+  color: var(--text-700);
   font-weight: 500;
-  font-size: large;
+  transition: color 0.2s ease;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
 }
+
 .navbar .navLink:hover {
-  opacity: 1;
+  color: var(--primary-500);
 }
-/* Underline‑Swipe */
+
+/* Underline swipe on hover */
 .navbar .navLink::after {
   content: "";
   position: absolute;
@@ -281,27 +307,29 @@ a {
   bottom: -2px;
   width: 100%;
   height: 2px;
-  background: currentColor;
+  background: var(--primary-500);
   transform: scaleX(0);
   transform-origin: right;
   transition: transform 0.25s ease;
 }
+
 .navbar .navLink:hover::after {
   transform: scaleX(1);
   transform-origin: left;
 }
 
-.navbar button {
+/* N1: Theme toggle button styled like app icon buttons */
+.navThemeToggle {
   width: 40px;
   height: 40px;
-  font-size: 25px;
-
+  font-size: 18px;
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: transparent;
-  border: 0;
-  color: var(--background-600);
+  background-color: var(--background-200);
+  border: 1.5px solid var(--background-300);
+  border-radius: 10px;
+  color: var(--text-700);
   cursor: pointer;
 }
 
@@ -322,7 +350,6 @@ a {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  /* background-color: red; */
   overflow: hidden;
 }
 
@@ -330,8 +357,9 @@ a {
   margin-bottom: 2rem;
 }
 
+/* T2: increased hero title to match app display hierarchy */
 .heroTitle {
-  font-size: 2rem;
+  font-size: 2.8rem;
   font-weight: 700;
   margin-bottom: 1rem;
   color: var(--text-900);
@@ -354,28 +382,42 @@ a {
   margin-bottom: 2rem;
 }
 
+/* C3/R3: border-radius 12px, min-height 44px for touch targets */
 .primaryButton {
   background-color: var(--primary-500);
-  color: var(--text-900);
+  color: white;
   border: none;
-  padding: 0.75rem 1.5rem;
+  padding: 0.75rem 1.75rem;
   font-size: large;
-  border-radius: 8px;
+  border-radius: 12px;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  min-height: 44px;
+  /* C4: slightly reduced shadow for cleaner look */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  display: inline-flex;
+  align-items: center;
 }
 
 .secondaryButton {
   background-color: transparent;
-  color: var(--text-900);
-  border: 2px solid var(--text-900);
   color: inherit;
-  padding: 0.75rem 1.5rem;
+  border: 2px solid var(--background-400);
+  padding: 0.75rem 1.75rem;
   font-size: 1rem;
-  border-radius: 8px;
+  border-radius: 12px;
   cursor: pointer;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  transition: border-color 0.2s ease;
 }
 
+.secondaryButton:hover {
+  border-color: var(--primary-500);
+  color: var(--primary-500);
+}
+
+/* D1: accent highlight in trust row */
 .trustRow {
   margin-top: 1.5rem;
   font-size: 0.95rem;
@@ -383,7 +425,11 @@ a {
   width: 95%;
 }
 
-/* -------------- Featuresection -------------- */
+.trustRow strong {
+  color: var(--accent-500);
+}
+
+/* -------------- Feature Sections -------------- */
 
 .featureSection {
   width: 100vw;
@@ -393,15 +439,18 @@ a {
   justify-content: space-evenly;
   align-items: center;
   flex-wrap: wrap;
+  gap: 2rem;
+  padding: 2rem;
 }
 
+/* T1/C2: border-radius 14px matches app card style (was 10px) */
 .featureImageContainer {
   width: 90%;
   max-width: 700px;
   aspect-ratio: 1;
   overflow: visible;
   background-color: var(--background-200);
-  border-radius: 10px;
+  border-radius: 14px;
 
   display: flex;
   justify-content: center;
@@ -429,6 +478,7 @@ a {
 .featureSection p {
   margin-top: 1rem;
   color: var(--text-700);
+  line-height: 1.6;
 }
 
 .featureSectionText {
@@ -436,16 +486,15 @@ a {
   width: 90%;
 }
 
-/* -------------- Testersection -------------- */
+/* -------------- Become Tester Section -------------- */
 
 .becomeTesterSection {
-  /* background-color: red; */
-
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
+/* T1: border-radius 14px (was 10px) */
 .becomeTesterWrapper {
   background-color: var(--background-200);
   max-width: 500px;
@@ -456,7 +505,7 @@ a {
   justify-content: center;
   align-items: flex-start;
   flex-direction: column;
-  border-radius: 10px;
+  border-radius: 14px;
   padding: 30px;
 
   position: relative;
@@ -477,13 +526,15 @@ a {
 #becomeTesterBackgroundIcon {
   position: absolute;
   z-index: 1;
+  /* D1: accent color for bg icon */
   color: var(--background-100);
   bottom: -50px;
   right: -50px;
   font-size: 25em;
 }
 
-/* -------------- Footersection -------------- */
+/* -------------- Footer Section (N2) -------------- */
+
 .footerSection {
   width: 100vw;
   padding: 2rem 1rem;
@@ -511,13 +562,12 @@ a {
 
 .footerLinksRow {
   display: flex;
-  gap: 2rem;
+  gap: 1.5rem;
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
 }
 
-/* Link-Stil */
 .footerLinkWrapper {
   position: relative;
   display: inline-block;
@@ -525,7 +575,7 @@ a {
 }
 
 .footerLinkText {
-  font-size: 1rem;
+  font-size: 0.95rem;
   color: var(--text-600);
   transition: color 0.2s ease-in-out;
 }
@@ -538,27 +588,115 @@ a {
   left: 0;
 }
 
-@media (max-width: 600px) {
-  .footerContent {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-  }
+/* -------------- Legal Pages (L1–L3: uniform layout) -------------- */
 
-  .footerLinksRow {
-    justify-content: center;
-    gap: 1rem;
-  }
+/* -------------- Breadcrumb -------------- */
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+  font-size: 0.9rem;
 }
 
-/* -------------- becomte Tester -------------- */
+.breadcrumbBack {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--primary-500);
+  font-weight: 500;
+  transition: color 0.2s ease;
+  cursor: pointer;
+}
+
+.breadcrumbBack:hover {
+  color: var(--accent-500);
+}
+
+.breadcrumbSeparator {
+  color: var(--text-400);
+}
+
+.breadcrumbCurrent {
+  color: var(--text-500);
+}
+
+/* -------------- Legal Pages -------------- */
+
+.legalPage {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 3rem 1.5rem 4rem;
+  min-height: calc(100vh - 120px);
+}
+
+.legalTitle {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+  color: var(--text-950);
+}
+
+.legalMeta {
+  font-size: 0.9rem;
+  color: var(--text-500);
+  margin-bottom: 2.5rem;
+}
+
+.legalSection {
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--background-300);
+}
+
+.legalSection:last-child {
+  border-bottom: none;
+}
+
+.legalSectionTitle {
+  font-size: 1.4rem;
+  margin-bottom: 0.75rem;
+  color: var(--text-900);
+}
+
+.legalSection p {
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--text-700);
+  margin-bottom: 0.5rem;
+}
+
+.legalList {
+  margin: 0.75rem 0 0.75rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.legalList li {
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--text-700);
+}
+
+/* D1: accent-colored links throughout legal pages */
+.legalLink {
+  color: var(--primary-500);
+  text-decoration: underline;
+  transition: color 0.2s ease;
+}
+
+.legalLink:hover {
+  color: var(--accent-500);
+}
+
+/* -------------- Become Tester Page -------------- */
 
 .becomeTesterMain {
   min-height: calc(100vh - 120px);
-  padding: 60px 20px;
+  padding: 3rem 1.5rem 4rem;
   max-width: 800px;
   margin: 0 auto;
-  font-family: Arial, sans-serif;
   color: var(--text-900);
 }
 
@@ -573,6 +711,7 @@ a {
   font-size: 18px;
   text-align: center;
   margin-bottom: 40px;
+  color: var(--text-700);
 }
 
 .becomeTesterStepsContainer {
@@ -584,8 +723,9 @@ a {
 .becomeTesterStepBox {
   background-color: var(--background-200);
   padding: 24px;
-  border-radius: 12px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 14px;
+  /* C4: slightly reduced shadow */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 }
 
 .becomeTesterStepTitle {
@@ -595,4 +735,86 @@ a {
 
 .becomeTesterSection a {
   z-index: 22;
+}
+
+/* -------------- Responsive: 700px -------------- */
+
+@media (max-width: 700px) {
+  .navbar {
+    display: none;
+  }
+
+  /* T2/R2: scale down large section headings on tablet */
+  .featureSection h2 {
+    font-size: 2.4rem;
+  }
+
+  .heroTitle {
+    font-size: 2rem;
+  }
+
+  .heroSection {
+    padding-top: 2rem;
+  }
+
+  .footerContent {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .footerLinksRow {
+    justify-content: center;
+    gap: 1rem;
+  }
+}
+
+/* -------------- Responsive: 480px (R1: new breakpoint) -------------- */
+
+@media (max-width: 480px) {
+  /* R2: mobile-optimized font sizes */
+  .heroTitle {
+    font-size: 1.75rem;
+  }
+
+  .heroSubtitle {
+    font-size: 1rem;
+  }
+
+  .featureSection h2 {
+    font-size: 1.9rem;
+  }
+
+  /* R3: full-width buttons for easy tapping */
+  .primaryButton,
+  .secondaryButton {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .motionButton {
+    width: 90%;
+    max-width: 300px;
+  }
+
+  .ctaWrapper {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .featureSection {
+    padding: 1.5rem 1rem;
+  }
+
+  .becomeTesterTitle {
+    font-size: 2rem;
+  }
+
+  .legalTitle {
+    font-size: 2rem;
+  }
+
+  .legalSectionTitle {
+    font-size: 1.2rem;
+  }
 }

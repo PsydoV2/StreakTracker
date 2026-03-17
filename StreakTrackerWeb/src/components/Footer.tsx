@@ -42,11 +42,12 @@ export default function Footer() {
         </div>
 
         <div className="footerLinksRow">
-          <AnimatedLink href="/imprint" label="Imprint" />
-          <AnimatedLink href="/privacy" label="Privacy" />
           <AnimatedLink href="/" label="Home" />
-          <AnimatedLink href="/#firstFeature" label="Features" />
+          <AnimatedLink href="/#theme" label="Features" />
           <AnimatedLink href="/#becomeTester" label="Become Tester" />
+          <AnimatedLink href="/privacy" label="Privacy" />
+          <AnimatedLink href="/terms" label="Terms" />
+          <AnimatedLink href="/imprint" label="Imprint" />
         </div>
       </div>
     </footer>
