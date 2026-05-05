@@ -35,7 +35,7 @@ export default function ArchiveScreen() {
         <Text style={styles.emptyHint}>{t("noArchivedStreaksYet")}</Text>
       )}
 
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1 }}>
         {archivedStreaks.map((streak) => (
           <StreakElement
             key={streak.id}

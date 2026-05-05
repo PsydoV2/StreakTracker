@@ -436,6 +436,8 @@ export const emojiCategories = {
 
 const NUM_COLUMNS = 6;
 const SCREEN_WIDTH = Dimensions.get("window").width;
+const PICKER_WIDTH = SCREEN_WIDTH * 0.9;
+const EMOJI_CELL_SIZE = Math.floor((PICKER_WIDTH - 16) / NUM_COLUMNS);
 
 type Props = {
   visible: boolean;
@@ -544,8 +546,8 @@ const getStyles = (colors: typeof Colors.light) =>
       fontFamily: "Roboto",
     },
     emojiCell: {
-      width: SCREEN_WIDTH / NUM_COLUMNS,
-      height: 50,
+      width: EMOJI_CELL_SIZE,
+      height: EMOJI_CELL_SIZE,
       justifyContent: "center",
       alignItems: "center",
     },

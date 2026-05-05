@@ -60,7 +60,7 @@ export default function Settings() {
   const { t } = useTranslation();
   const { language, setLanguage } = useLanguage();
 
-  const appVersion = "1.6.0";
+  const appVersion = "1.6.1";
 
   const inputs = useRef<Array<TextInput | null>>([null, null, null, null]);
   const confirmInputs = useRef<Array<TextInput | null>>([

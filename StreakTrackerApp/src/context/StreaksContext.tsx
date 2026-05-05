@@ -73,7 +73,7 @@ export const StreaksProvider = ({
           return s;
         });
 
-        await save(checked, false);
+        await save(checked);
       }
     } catch (error) {
       console.error("[StreaksContext] Failed to load streaks:", error);
@@ -82,14 +82,8 @@ export const StreaksProvider = ({
     }
   }
 
-  /**
-   * Persists `newStreaks` to AsyncStorage and updates local state.
-   * Pass `updateState = false` during the initial load to avoid a
-   * superfluous re-render before `setLoaded(true)`.
-   */
-  async function save(newStreaks: Streak[], updateState = true): Promise<void> {
-    if (updateState) setStreaks(newStreaks);
-    else setStreaks(newStreaks); // always keep state in sync
+  async function save(newStreaks: Streak[]): Promise<void> {
+    setStreaks(newStreaks);
     await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(newStreaks));
   }
 

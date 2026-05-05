@@ -77,6 +77,7 @@ export default function StreakElement(props: Props) {
       streakCount: 0,
       dateLastTracker: new Date(0).toISOString(),
       dateRestartedAt: new Date().toISOString(),
+      trackingDates: [],
     });
 
     props.confettiAbfeuern();
@@ -229,9 +230,7 @@ const getStyles = (colors: typeof Colors.light) =>
 
     row: {
       width: "100%",
-      height: "50%",
-
-      display: "flex",
+      flex: 1,
       flexDirection: "row",
       justifyContent: "space-evenly",
       alignItems: "center",

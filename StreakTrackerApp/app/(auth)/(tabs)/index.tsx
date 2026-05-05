@@ -58,7 +58,7 @@ export default function TabOneScreen() {
       {loaded && activeStreaks.length === 0 && (
         <Text style={styles.emptyHint}>{t("emptyStateActive")}</Text>
       )}
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1 }}>
         {loaded &&
           activeStreaks.map((streak) => (
               <StreakElement
