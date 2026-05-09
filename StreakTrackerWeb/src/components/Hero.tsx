@@ -4,9 +4,10 @@ import { useThemeProvider } from "@/context/ThemeProvider";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import MotionSection from "./MotionSection";
+import { FaMoon, FaSun } from "react-icons/fa6";
 
 export default function Hero() {
-  const { theme } = useThemeProvider();
+  const { theme, setTheme } = useThemeProvider();
 
   return (
     <MotionSection className={"heroSection"}>
@@ -68,10 +69,20 @@ export default function Hero() {
           className={"secondaryButton patrick-hand-regular"}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
-          href="#theme"
+          href="#cycles"
         >
           Explore Features
         </motion.a>
+
+        <motion.button
+          className={"themeToggleBtn patrick-hand-regular"}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+        >
+          {theme === "dark" ? <FaSun /> : <FaMoon />}
+          {theme === "dark" ? "Light Mode" : "Dark Mode"}
+        </motion.button>
       </motion.div>
 
       <motion.div
@@ -80,9 +91,11 @@ export default function Hero() {
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2, duration: 0.5 }}
       >
-        🔥 <strong className="space-mono-regular">12,000+</strong> habits
-        tracked &nbsp; | &nbsp; ✅
-        <strong className="space-mono-regular"> 95%</strong> user satisfaction
+        🌍 <strong className="space-mono-regular">8 languages</strong>
+        &nbsp;·&nbsp; 🔒{" "}
+        <strong className="space-mono-regular">offline &amp; private</strong>
+        &nbsp;·&nbsp; ✓{" "}
+        <strong className="space-mono-regular">free forever</strong>
       </motion.div>
     </MotionSection>
   );

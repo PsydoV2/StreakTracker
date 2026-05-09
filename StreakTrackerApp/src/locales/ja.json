@@ -49,5 +49,16 @@
   "onboarding3Body": "活動ヒートマップ、現在のストリーク、個人記録をひとつの場所で。",
   "onboarding4Title": "準備完了！",
   "onboarding4Body": "最初のストリークを作って、今日から習慣づくりを始めよう。",
-  "restartOnboarding": "チュートリアルを再表示"
+  "restartOnboarding": "チュートリアルを再表示",
+  "cycleDaily": "毎日",
+  "cycleWeekly": "毎週",
+  "cycleMonthly": "毎月",
+  "cycleEveryNDays": "{{count}}日ごと",
+  "cycleEveryNWeeks": "{{count}}週ごと",
+  "cycleCustom": "カスタム",
+  "setCycle": "サイクルを設定",
+  "days": "日",
+  "weeksTracked": "週間記録",
+  "monthsTracked": "ヶ月記録",
+  "timesTracked": "回記録"
 }

@@ -49,5 +49,16 @@
   "onboarding3Body": "Aktivite haritanı, mevcut serini ve rekorlarını tek bir yerde gör.",
   "onboarding4Title": "Hazırsın!",
   "onboarding4Body": "İlk serini oluştur ve bugün daha iyi alışkanlıklar edinmeye başla.",
-  "restartOnboarding": "Tanıtımı yeniden başlat"
+  "restartOnboarding": "Tanıtımı yeniden başlat",
+  "cycleDaily": "Her gün",
+  "cycleWeekly": "Her hafta",
+  "cycleMonthly": "Her ay",
+  "cycleEveryNDays": "Her {{count}} günde bir",
+  "cycleEveryNWeeks": "Her {{count}} haftada bir",
+  "cycleCustom": "Özel",
+  "setCycle": "Döngü ayarla",
+  "days": "gün",
+  "weeksTracked": "hafta takip edildi",
+  "monthsTracked": "ay takip edildi",
+  "timesTracked": "kez takip edildi"
 }

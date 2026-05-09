@@ -49,5 +49,16 @@
   "onboarding3Body": "Tu mapa de actividad, racha actual y récords personales — todo en un lugar.",
   "onboarding4Title": "¡Todo listo!",
   "onboarding4Body": "Crea tu primera racha y empieza a construir mejores hábitos hoy.",
-  "restartOnboarding": "Reiniciar introducción"
+  "restartOnboarding": "Reiniciar introducción",
+  "cycleDaily": "Cada día",
+  "cycleWeekly": "Cada semana",
+  "cycleMonthly": "Cada mes",
+  "cycleEveryNDays": "Cada {{count}} días",
+  "cycleEveryNWeeks": "Cada {{count}} semanas",
+  "cycleCustom": "Personalizado",
+  "setCycle": "Establecer ciclo",
+  "days": "días",
+  "weeksTracked": "semanas registradas",
+  "monthsTracked": "meses registrados",
+  "timesTracked": "veces registradas"
 }

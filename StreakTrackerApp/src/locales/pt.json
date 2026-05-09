@@ -49,5 +49,16 @@
   "onboarding3Body": "Seu mapa de atividade, sequência atual e recordes pessoais — tudo em um lugar.",
   "onboarding4Title": "Tudo Pronto!",
   "onboarding4Body": "Crie sua primeira sequência e comece a construir melhores hábitos hoje.",
-  "restartOnboarding": "Reiniciar introdução"
+  "restartOnboarding": "Reiniciar introdução",
+  "cycleDaily": "Todo dia",
+  "cycleWeekly": "Toda semana",
+  "cycleMonthly": "Todo mês",
+  "cycleEveryNDays": "A cada {{count}} dias",
+  "cycleEveryNWeeks": "A cada {{count}} semanas",
+  "cycleCustom": "Personalizado",
+  "setCycle": "Definir ciclo",
+  "days": "dias",
+  "weeksTracked": "semanas registradas",
+  "monthsTracked": "meses registrados",
+  "timesTracked": "vezes registradas"
 }

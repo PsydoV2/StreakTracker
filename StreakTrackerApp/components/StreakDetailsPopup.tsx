@@ -13,11 +13,11 @@ import Colors from "@/constants/Colors";
 import { FontAwesome6 } from "@expo/vector-icons";
 import { format } from "date-fns";
 import { useTranslation } from "react-i18next";
-
 interface Props {
   streakCount: number;
   record: number;
   trackingDates: string[];
+  cycle: number;
 }
 
 const NUM_COLUMNS = 14;
@@ -25,7 +25,7 @@ const SCREEN_WIDTH = Dimensions.get("window").width;
 const CELL_SIZE = Math.floor((SCREEN_WIDTH - 32) / NUM_COLUMNS) - 4;
 
 const StreakDetailsPopup = forwardRef<BottomSheetModal, Props>(
-  ({ streakCount, record, trackingDates }, ref) => {
+  ({ streakCount, record, trackingDates, cycle }, ref) => {
     const colorScheme = useColorScheme();
     const theme = Colors[colorScheme ?? "light"];
     const styles = getStyles(theme);
@@ -134,7 +134,15 @@ const StreakDetailsPopup = forwardRef<BottomSheetModal, Props>(
                   color={theme.accent500}
                   style={{ marginRight: 4 }}
                 />
-                <Text style={styles.statLabel}>{t("daysTracked")}</Text>
+                <Text style={styles.statLabel}>
+                {cycle === 7
+                  ? t("weeksTracked")
+                  : cycle === 30
+                    ? t("monthsTracked")
+                    : cycle === 1
+                      ? t("daysTracked")
+                      : t("timesTracked")}
+              </Text>
               </View>
             </View>
           </View>

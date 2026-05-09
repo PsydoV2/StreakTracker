@@ -4,10 +4,12 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import uuid from "react-native-uuid";
 import { differenceInCalendarDays } from "date-fns";
 
+// cycle = interval in days (1 = daily, 2 = every 2 days, 7 = weekly, 30 = monthly, …)
 export type Streak = {
   id: string;
   title: string;
   emoji: string;
+  cycle: number;
   dateLastTracker: string;
   dateCreatedAt: string;
   dateRestartedAt: string | null;
@@ -19,10 +21,17 @@ export type Streak = {
 
 const STORAGE_KEY = "@streaks";
 
+// Migration map for old string-based cycle values
+const LEGACY_CYCLE_MAP: Record<string, number> = {
+  daily: 1,
+  weekly: 7,
+  monthly: 30,
+};
+
 type StreakContextType = {
   streaks: Streak[];
   loaded: boolean;
-  addStreak: (title: string, emoji: string) => void;
+  addStreak: (title: string, emoji: string, cycle?: number) => void;
   updateStreak: (updated: Streak) => void;
   deleteStreak: (id: string) => void;
 };
@@ -52,25 +61,33 @@ export const StreaksProvider = ({
       const json = await AsyncStorage.getItem(STORAGE_KEY);
 
       if (json) {
-        const parsed = JSON.parse(json) as Streak[];
+        const parsed = JSON.parse(json) as any[];
         const now = new Date();
 
         const checked = parsed.map((s): Streak => {
-          // Already archived – nothing to do.
-          if (s.archived) return s;
+          // Migrate legacy string cycle values
+          const rawCycle = s.cycle;
+          const cycle: number =
+            typeof rawCycle === "number"
+              ? rawCycle
+              : typeof rawCycle === "string"
+                ? (LEGACY_CYCLE_MAP[rawCycle] ?? 1)
+                : 1;
 
-          const last = new Date(s.dateLastTracker);
-          const missedDays = differenceInCalendarDays(now, last);
+          const migrated: Streak = { ...s, cycle };
 
-          // A streak is only breakable after it has actually been started
-          // (i.e. at least one tracking date exists) and more than one
-          // calendar day has passed since the last tracking.
-          const hasStarted = s.trackingDates.length > 0;
-          if (hasStarted && missedDays > 1) {
-            return { ...s, archived: true };
+          if (migrated.archived) return migrated;
+
+          const last = new Date(migrated.dateLastTracker);
+          const daysSinceLast = differenceInCalendarDays(now, last);
+          const hasStarted = migrated.trackingDates.length > 0;
+
+          // Archive if more than one full interval has been missed
+          if (hasStarted && daysSinceLast > cycle) {
+            return { ...migrated, archived: true };
           }
 
-          return s;
+          return migrated;
         });
 
         await save(checked);
@@ -87,11 +104,12 @@ export const StreaksProvider = ({
     await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(newStreaks));
   }
 
-  function addStreak(title: string, emoji: string): void {
+  function addStreak(title: string, emoji: string, cycle: number = 1): void {
     const newStreak: Streak = {
       id: uuid.v4() as string,
       title,
       emoji,
+      cycle,
       dateLastTracker: new Date(0).toISOString(),
       dateCreatedAt: new Date().toISOString(),
       dateRestartedAt: null,

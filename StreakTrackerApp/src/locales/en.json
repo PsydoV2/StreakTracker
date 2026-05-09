@@ -49,5 +49,16 @@
   "onboarding3Body": "Your activity heatmap, current streak, and personal records — all in one place.",
   "onboarding4Title": "You're All Set!",
   "onboarding4Body": "Create your first streak and start building better habits today.",
-  "restartOnboarding": "Restart Onboarding"
+  "restartOnboarding": "Restart Onboarding",
+  "cycleDaily": "Every day",
+  "cycleWeekly": "Every week",
+  "cycleMonthly": "Every month",
+  "cycleEveryNDays": "Every {{count}} days",
+  "cycleEveryNWeeks": "Every {{count}} weeks",
+  "cycleCustom": "Custom",
+  "setCycle": "Set Cycle",
+  "days": "days",
+  "weeksTracked": "weeks tracked",
+  "monthsTracked": "months tracked",
+  "timesTracked": "times tracked"
 }

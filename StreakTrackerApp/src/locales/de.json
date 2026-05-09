@@ -49,5 +49,16 @@
   "onboarding3Body": "Deine Aktivitäts-Heatmap, aktueller Streak und Rekorde – alles an einem Ort.",
   "onboarding4Title": "Du bist bereit!",
   "onboarding4Body": "Erstelle deinen ersten Streak und starte noch heute.",
-  "restartOnboarding": "Onboarding neu starten"
+  "restartOnboarding": "Onboarding neu starten",
+  "cycleDaily": "Täglich",
+  "cycleWeekly": "Wöchentlich",
+  "cycleMonthly": "Monatlich",
+  "cycleEveryNDays": "Alle {{count}} Tage",
+  "cycleEveryNWeeks": "Alle {{count}} Wochen",
+  "cycleCustom": "Benutzerdefiniert",
+  "setCycle": "Zyklus wählen",
+  "days": "Tage",
+  "weeksTracked": "Wochen erreicht",
+  "monthsTracked": "Monate erreicht",
+  "timesTracked": "Mal erreicht"
 }

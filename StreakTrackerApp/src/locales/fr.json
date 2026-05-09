@@ -49,5 +49,16 @@
   "onboarding3Body": "Ta heatmap d'activité, ta série actuelle et tes records — au même endroit.",
   "onboarding4Title": "Tu es prêt !",
   "onboarding4Body": "Crée ta première série et commence à bâtir de meilleures habitudes dès aujourd'hui.",
-  "restartOnboarding": "Relancer l'introduction"
+  "restartOnboarding": "Relancer l'introduction",
+  "cycleDaily": "Chaque jour",
+  "cycleWeekly": "Chaque semaine",
+  "cycleMonthly": "Chaque mois",
+  "cycleEveryNDays": "Tous les {{count}} jours",
+  "cycleEveryNWeeks": "Toutes les {{count}} semaines",
+  "cycleCustom": "Personnalisé",
+  "setCycle": "Définir le cycle",
+  "days": "jours",
+  "weeksTracked": "semaines suivies",
+  "monthsTracked": "mois suivis",
+  "timesTracked": "fois enregistrées"
 }

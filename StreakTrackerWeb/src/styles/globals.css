@@ -818,3 +818,122 @@ a {
     font-size: 1.2rem;
   }
 }
+
+/* -------------- Theme Toggle Button (Hero) -------------- */
+
+.themeToggleBtn {
+  background-color: transparent;
+  color: var(--text-700);
+  border: 2px solid var(--background-400);
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  border-radius: 12px;
+  cursor: pointer;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.themeToggleBtn:hover {
+  border-color: var(--accent-500);
+  color: var(--accent-500);
+}
+
+/* -------------- Features Highlights Grid -------------- */
+
+.featuresHighlightsSection {
+  min-height: auto !important;
+  padding: 5rem 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2.5rem;
+}
+
+.featuresHighlightsTitle {
+  font-size: 2.8rem;
+  color: var(--text-900);
+  text-align: center;
+  max-width: 640px;
+  line-height: 1.2;
+}
+
+.featuresHighlightsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  max-width: 900px;
+  width: 100%;
+}
+
+.featureHighlightCard {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  background-color: var(--background-200);
+  border-radius: 14px;
+  padding: 1.25rem;
+  border: 1px solid var(--background-300);
+  transition: border-color 0.2s ease;
+}
+
+.featureHighlightCard:hover {
+  border-color: var(--primary-500);
+}
+
+.featureHighlightIcon {
+  font-size: 1.2rem;
+  color: var(--primary-500);
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  background-color: var(--background-300);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.featureHighlightCardBody {
+  flex: 1;
+  min-width: 0;
+}
+
+.featureHighlightCardTitle {
+  font-size: 1.15rem;
+  color: var(--text-900);
+  margin-bottom: 0.3rem;
+}
+
+.featureHighlightCardDesc {
+  font-size: 0.9rem;
+  color: var(--text-600);
+  line-height: 1.5;
+}
+
+@media (max-width: 700px) {
+  .featuresHighlightsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .featuresHighlightsTitle {
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .featuresHighlightsSection {
+    padding: 3rem 1rem;
+  }
+
+  .featuresHighlightsTitle {
+    font-size: 1.75rem;
+  }
+
+  .themeToggleBtn {
+    width: 100%;
+    justify-content: center;
+  }
+}
