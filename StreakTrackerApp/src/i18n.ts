@@ -10,6 +10,8 @@ import tr from "./locales/tr.json";
 import pt from "./locales/pt.json";
 import ja from "./locales/ja.json";
 
+// i18next's default export intentionally carries its own instance methods.
+// eslint-disable-next-line import/no-named-as-default-member
 i18n.use(initReactI18next).init({
   resources: {
     en: { translation: en },

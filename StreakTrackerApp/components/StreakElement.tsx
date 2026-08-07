@@ -8,14 +8,13 @@ import {
   useColorScheme,
 } from "react-native";
 import { Text, View } from "./Themed";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Streak } from "@/src/context/StreaksContext";
 import EmojiOverlayPicker from "./EmojiPicker";
 import { differenceInCalendarDays, parseISO } from "date-fns";
 import { Entypo, Feather, FontAwesome6 } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
-import { useRef } from "react";
 import StreakDetailsPopup from "./StreakDetailsPopup";
 import { useTranslation } from "react-i18next";
 
@@ -26,7 +25,10 @@ interface Props extends Streak {
 
 const CYCLE_PRESETS = [1, 2, 3, 7, 14, 30];
 
-function getCycleLabel(cycle: number, t: (key: string, opts?: Record<string, unknown>) => string): string {
+function getCycleLabel(
+  cycle: number,
+  t: (key: string, opts?: Record<string, unknown>) => string,
+): string {
   if (cycle === 1) return t("cycleDaily");
   if (cycle === 7) return t("cycleWeekly");
   if (cycle === 30) return t("cycleMonthly");
@@ -112,8 +114,12 @@ export default function StreakElement(props: Props) {
   };
 
   const today = new Date();
-  const lastTracked = props.dateLastTracker ? parseISO(props.dateLastTracker) : null;
-  const daysSinceLast = lastTracked ? differenceInCalendarDays(today, lastTracked) : 9999;
+  const lastTracked = props.dateLastTracker
+    ? parseISO(props.dateLastTracker)
+    : null;
+  const daysSinceLast = lastTracked
+    ? differenceInCalendarDays(today, lastTracked)
+    : 9999;
   const canTrackThisPeriod = daysSinceLast >= cycle;
 
   const accentColor = props.archived
@@ -161,7 +167,9 @@ export default function StreakElement(props: Props) {
                 color={theme.primary500}
                 style={{ marginRight: 4 }}
               />
-              <Text style={styles.cycleBadgeText}>{getCycleLabel(cycle, t)}</Text>
+              <Text style={styles.cycleBadgeText}>
+                {getCycleLabel(cycle, t)}
+              </Text>
             </TouchableOpacity>
           </View>
 
@@ -170,7 +178,11 @@ export default function StreakElement(props: Props) {
             onPress={() => setMenuVisible(true)}
             hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
           >
-            <Entypo name="dots-three-vertical" size={18} color={theme.text500} />
+            <Entypo
+              name="dots-three-vertical"
+              size={18}
+              color={theme.text500}
+            />
           </TouchableOpacity>
         </View>
 
@@ -274,7 +286,9 @@ export default function StreakElement(props: Props) {
             </View>
 
             {/* Custom stepper */}
-            <View style={[styles.customRow, (isCustom) && styles.customRowActive]}>
+            <View
+              style={[styles.customRow, isCustom && styles.customRowActive]}
+            >
               <Text style={styles.customLabel}>{t("cycleCustom")}</Text>
               <View style={styles.stepper}>
                 <TouchableOpacity

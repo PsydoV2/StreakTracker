@@ -1,5 +1,7 @@
 // app/_layout.tsx
-import "react-native-gesture-handler";
+// Must be the very first import so gesture-handler's native module loads
+// before anything else touches it.
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import "../src/i18n";
 
 import FontAwesome from "@expo/vector-icons/FontAwesome";
@@ -8,7 +10,6 @@ import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import { useColorScheme } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { DarkTheme, DefaultTheme, Slot, ThemeProvider } from "expo-router";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 

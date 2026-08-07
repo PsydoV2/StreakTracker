@@ -11,7 +11,7 @@ type LanguageContextType = {
 };
 
 const LanguageContext = createContext<LanguageContextType | undefined>(
-  undefined
+  undefined,
 );
 
 const streakTrackerLanguageKey = "streakTrackerLanguage";
@@ -29,6 +29,8 @@ export const LanguageProvider = ({
       const fallback = getLocales()[0]?.languageCode || "en";
       const lng = (savedLng || fallback) as Language;
 
+      // i18next's default export intentionally carries its own instance methods.
+      // eslint-disable-next-line import/no-named-as-default-member
       await i18n.changeLanguage(lng);
       setLanguageState(lng);
     };
@@ -37,6 +39,8 @@ export const LanguageProvider = ({
   }, []);
 
   const setLanguage = async (lng: Language) => {
+    // i18next's default export intentionally carries its own instance methods.
+    // eslint-disable-next-line import/no-named-as-default-member
     await i18n.changeLanguage(lng);
     await AsyncStorage.setItem(streakTrackerLanguageKey, lng);
     setLanguageState(lng);

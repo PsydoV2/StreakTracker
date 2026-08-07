@@ -43,14 +43,14 @@ Both contexts are mounted in `app/_layout.tsx` wrapping the entire `<Slot />`.
 
 ### Data model (`Streak` type)
 
-| Field | Purpose |
-|---|---|
-| `streakCount` | Current consecutive days |
-| `record` | All-time best streak |
-| `trackingDates` | ISO strings of every tracked day |
+| Field             | Purpose                                                        |
+| ----------------- | -------------------------------------------------------------- |
+| `streakCount`     | Current consecutive days                                       |
+| `record`          | All-time best streak                                           |
+| `trackingDates`   | ISO strings of every tracked day                               |
 | `dateLastTracker` | ISO string of last tracking; epoch (Jan 1 1970) when untouched |
-| `archived` | True when broken or manually archived |
-| `dateRestartedAt` | Set on restart; null otherwise |
+| `archived`        | True when broken or manually archived                          |
+| `dateRestartedAt` | Set on restart; null otherwise                                 |
 
 ### Theming & styling
 
@@ -59,6 +59,7 @@ Colors are defined in `constants/Colors.ts` with `light` and `dark` variants. Ea
 **The color palette and logo (`assets/images/logo.png`) are locked and must not be changed.**
 
 Every component derives styles by calling `getStyles(colorPalette)` at render time:
+
 ```ts
 const colorScheme = useColorScheme();
 const colorPalette = colorScheme === "dark" ? Colors.dark : Colors.light;
@@ -67,11 +68,11 @@ const styles = getStyles(colorPalette);
 
 ### Fonts
 
-| Font | Usage |
-|---|---|
+| Font          | Usage                           |
+| ------------- | ------------------------------- |
 | `PatrickHand` | Titles, headings, large UI text |
-| `Roboto` | Body text, labels, info text |
-| `SpaceMono` | (available, not currently used) |
+| `Roboto`      | Body text, labels, info text    |
+| `SpaceMono`   | (available, not currently used) |
 
 Always specify `fontFamily` explicitly — React Native does not inherit fonts.
 
@@ -82,6 +83,7 @@ Always specify `fontFamily` explicitly — React Native does not inherit fonts.
 ### Notifications
 
 `src/utils/NotificationManager.ts` exports:
+
 - `requestNotificationPermissions()` — call once at startup
 - `scheduleDefaultReminders()` — sets morning (08:00) and evening (20:00) notifications
 - `updateEveningReminder(streaks)` — call on focus to update evening message based on completion state
@@ -97,10 +99,10 @@ All functions are no-ops in Expo Go (`isExpoGo` guard). `expo-notifications` is 
 
 ### AsyncStorage keys
 
-| Key | Content |
-|---|---|
-| `@streaks` | JSON array of `Streak` objects |
-| `StreakTrackerPin` | 4-digit PIN string |
-| `StreakTrackerBiometric` | `"true"` if biometric enabled |
+| Key                      | Content                           |
+| ------------------------ | --------------------------------- |
+| `@streaks`               | JSON array of `Streak` objects    |
+| `StreakTrackerPin`       | 4-digit PIN string                |
+| `StreakTrackerBiometric` | `"true"` if biometric enabled     |
 | `StreakTrackerOnboarded` | Any truthy value after onboarding |
-| `streakTrackerLanguage` | Language code |
+| `streakTrackerLanguage`  | Language code                     |

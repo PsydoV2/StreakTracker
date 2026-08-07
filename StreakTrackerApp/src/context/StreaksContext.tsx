@@ -52,8 +52,11 @@ export const StreaksProvider = ({
   const [streaks, setStreaks] = useState<Streak[]>([]);
   const [loaded, setLoaded] = useState(false);
 
+  // Runs once on mount; loadStreaks/save only close over stable setters and
+  // STORAGE_KEY, so they don't need to be reactive dependencies here.
   useEffect(() => {
     loadStreaks();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   async function loadStreaks(): Promise<void> {

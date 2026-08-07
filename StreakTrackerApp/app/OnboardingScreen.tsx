@@ -19,6 +19,7 @@ import Colors from "@/constants/Colors";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const SCREEN_WIDTH = Dimensions.get("window").width;
+const VIEWABILITY_CONFIG = { viewAreaCoveragePercentThreshold: 50 };
 
 const STORAGE_KEY_ONBOARDED = "StreakTrackerOnboarded";
 const STORAGE_KEY_LAST_VERSION = "StreakTrackerLastVersion";
@@ -72,10 +73,8 @@ export default function OnboardingScreen() {
         setCurrentIndex(viewableItems[0].index);
       }
     },
-    []
+    [],
   );
-
-  const viewabilityConfig = useRef({ viewAreaCoveragePercentThreshold: 50 });
 
   const handleNext = () => {
     if (currentIndex < PAGES.length - 1) {
@@ -136,7 +135,7 @@ export default function OnboardingScreen() {
         pagingEnabled
         showsHorizontalScrollIndicator={false}
         onViewableItemsChanged={onViewableItemsChanged}
-        viewabilityConfig={viewabilityConfig.current}
+        viewabilityConfig={VIEWABILITY_CONFIG}
         style={styles.pager}
       />
 

@@ -23,19 +23,19 @@ Build better habits – one day at a time. StreakTracker helps you track persona
 
 ## 🧠 Tech Stack
 
-| Category       | Technology                                      |
-| -------------- | ----------------------------------------------- |
-| Framework      | Expo SDK 54 + React Native                      |
-| Routing        | expo-router (file-based, typed routes)          |
-| State          | React Context (StreaksContext, LanguageContext)  |
-| Storage        | AsyncStorage (local, offline-first)             |
-| Bottom Sheet   | @gorhom/bottom-sheet                            |
-| Modal          | react-native-modal                              |
-| Haptics        | expo-haptics                                    |
-| Confetti       | react-native-confetti-cannon                    |
-| Biometrics     | expo-local-authentication                       |
-| i18n           | react-i18next                                   |
-| OTA Updates    | expo-updates (EAS)                              |
+| Category     | Technology                                      |
+| ------------ | ----------------------------------------------- |
+| Framework    | Expo SDK 54 + React Native                      |
+| Routing      | expo-router (file-based, typed routes)          |
+| State        | React Context (StreaksContext, LanguageContext) |
+| Storage      | AsyncStorage (local, offline-first)             |
+| Bottom Sheet | @gorhom/bottom-sheet                            |
+| Modal        | react-native-modal                              |
+| Haptics      | expo-haptics                                    |
+| Confetti     | react-native-confetti-cannon                    |
+| Biometrics   | expo-local-authentication                       |
+| i18n         | react-i18next                                   |
+| OTA Updates  | expo-updates (EAS)                              |
 
 ---
 

@@ -30,7 +30,7 @@ function buildDailyTrigger(
   hour: number,
   minute: number,
 ): NotificationTriggerInput {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
   const { SchedulableTriggerInputTypes } = require("expo-notifications");
   if (Platform.OS === "ios") {
     return {
@@ -58,7 +58,7 @@ export function allStreaksDone(streaks: Streak[]): boolean {
 /** Requests notification permissions if not already granted. */
 export async function requestNotificationPermissions(): Promise<void> {
   if (isExpoGo) return;
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
   const Notifications = require("expo-notifications");
   const { granted } = await Notifications.getPermissionsAsync();
   if (!granted) {
@@ -72,7 +72,7 @@ export async function requestNotificationPermissions(): Promise<void> {
  */
 export async function scheduleDefaultReminders(): Promise<void> {
   if (isExpoGo) return;
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
   const Notifications = require("expo-notifications");
 
   await Notifications.cancelAllScheduledNotificationsAsync();
@@ -102,7 +102,7 @@ export async function scheduleDefaultReminders(): Promise<void> {
  */
 export async function updateEveningReminder(streaks: Streak[]): Promise<void> {
   if (isExpoGo) return;
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
   const Notifications = require("expo-notifications");
 
   const done = allStreaksDone(streaks);

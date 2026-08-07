@@ -6,7 +6,6 @@ import {
   FlatList,
   useColorScheme,
   Dimensions,
-  TouchableOpacity,
 } from "react-native";
 import { BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import Colors from "@/constants/Colors";
@@ -44,7 +43,7 @@ const StreakDetailsPopup = forwardRef<BottomSheetModal, Props>(
     const totalTracked = safeDates.length;
 
     const trackedSet = new Set(
-      safeDates.map((d) => format(new Date(d), "yyyy-MM-dd"))
+      safeDates.map((d) => format(new Date(d), "yyyy-MM-dd")),
     );
 
     const renderItem = ({ item }: { item: Date }) => {
@@ -135,14 +134,14 @@ const StreakDetailsPopup = forwardRef<BottomSheetModal, Props>(
                   style={{ marginRight: 4 }}
                 />
                 <Text style={styles.statLabel}>
-                {cycle === 7
-                  ? t("weeksTracked")
-                  : cycle === 30
-                    ? t("monthsTracked")
-                    : cycle === 1
-                      ? t("daysTracked")
-                      : t("timesTracked")}
-              </Text>
+                  {cycle === 7
+                    ? t("weeksTracked")
+                    : cycle === 30
+                      ? t("monthsTracked")
+                      : cycle === 1
+                        ? t("daysTracked")
+                        : t("timesTracked")}
+                </Text>
               </View>
             </View>
           </View>
@@ -171,8 +170,10 @@ const StreakDetailsPopup = forwardRef<BottomSheetModal, Props>(
         </BottomSheetScrollView>
       </BottomSheetModal>
     );
-  }
+  },
 );
+
+StreakDetailsPopup.displayName = "StreakDetailsPopup";
 
 export default StreakDetailsPopup;
 

@@ -11,9 +11,7 @@
       "url": "https://u.expo.dev/56c57319-8317-4119-aa8b-d27c4c6acbd2"
     },
     "runtimeVersion": "1.6.0",
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true
     },

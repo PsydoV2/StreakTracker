@@ -1,6 +1,5 @@
 // app/(auth)/settings.tsx
 import {
-  Dimensions,
   KeyboardAvoidingView,
   Linking,
   Platform,
@@ -62,13 +61,8 @@ export default function Settings() {
 
   const appVersion = "1.6.1";
 
-  const inputs = useRef<Array<TextInput | null>>([null, null, null, null]);
-  const confirmInputs = useRef<Array<TextInput | null>>([
-    null,
-    null,
-    null,
-    null,
-  ]);
+  const inputs = useRef<(TextInput | null)[]>([null, null, null, null]);
+  const confirmInputs = useRef<(TextInput | null)[]>([null, null, null, null]);
 
   useEffect(() => {
     (async () => {
@@ -461,7 +455,6 @@ export default function Settings() {
   );
 }
 
-const SCREEN_WIDTH = Dimensions.get("window").width;
 const LANG_BTN_SIZE = 62;
 
 const getStyles = (colorPalette: typeof Colors.light) =>

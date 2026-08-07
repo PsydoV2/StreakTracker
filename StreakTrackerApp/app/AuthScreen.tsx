@@ -35,11 +35,11 @@ export default function AuthScreen() {
   const [isLoadingPin, setIsLoadingPin] = useState(true);
   const [biometricAvailable, setBiometricAvailable] = useState(false);
   const [biometricType, setBiometricType] = useState<"face" | "fingerprint">(
-    "fingerprint"
+    "fingerprint",
   );
 
   const { t } = useTranslation();
-  const inputs = useRef<Array<TextInput | null>>([null, null, null, null]);
+  const inputs = useRef<(TextInput | null)[]>([null, null, null, null]);
 
   const navigateAfterAuth = () => {
     router.replace("/");
@@ -67,8 +67,9 @@ export default function AuthScreen() {
         }
 
         // 3. Biometric check
-        const biometricEnabled =
-          await AsyncStorage.getItem(STORAGE_KEY_BIOMETRIC);
+        const biometricEnabled = await AsyncStorage.getItem(
+          STORAGE_KEY_BIOMETRIC,
+        );
         if (biometricEnabled === "true") {
           const hasHardware = await LocalAuthentication.hasHardwareAsync();
           const isEnrolled = await LocalAuthentication.isEnrolledAsync();
@@ -76,7 +77,7 @@ export default function AuthScreen() {
             const types =
               await LocalAuthentication.supportedAuthenticationTypesAsync();
             const hasFace = types.includes(
-              LocalAuthentication.AuthenticationType.FACIAL_RECOGNITION
+              LocalAuthentication.AuthenticationType.FACIAL_RECOGNITION,
             );
             setBiometricType(hasFace ? "face" : "fingerprint");
             setBiometricAvailable(true);
@@ -93,13 +94,6 @@ export default function AuthScreen() {
     init();
   }, []);
 
-  // Auto-trigger biometric once confirmed available
-  useEffect(() => {
-    if (!isLoadingPin && biometricAvailable) {
-      triggerBiometric();
-    }
-  }, [isLoadingPin, biometricAvailable]);
-
   const triggerBiometric = async () => {
     try {
       const result = await LocalAuthentication.authenticateAsync({
@@ -110,7 +104,7 @@ export default function AuthScreen() {
 
       if (result.success) {
         await Haptics.notificationAsync(
-          Haptics.NotificationFeedbackType.Success
+          Haptics.NotificationFeedbackType.Success,
         );
         markPinVerified();
         navigateAfterAuth();
@@ -119,6 +113,16 @@ export default function AuthScreen() {
       console.error("[AuthScreen] Biometric auth error:", error);
     }
   };
+
+  // Auto-trigger biometric once confirmed available. Intentionally only
+  // re-runs when these two flags flip, not on every triggerBiometric
+  // identity change, otherwise the prompt would re-fire on each render.
+  useEffect(() => {
+    if (!isLoadingPin && biometricAvailable) {
+      triggerBiometric();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoadingPin, biometricAvailable]);
 
   const handleChange = (text: string, index: number) => {
     const newDigits = [...digits];
@@ -153,7 +157,7 @@ export default function AuthScreen() {
 
       if (entered === stored) {
         await Haptics.notificationAsync(
-          Haptics.NotificationFeedbackType.Success
+          Haptics.NotificationFeedbackType.Success,
         );
         markPinVerified();
         setIsCorrect(true);
