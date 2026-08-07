@@ -1,11 +1,10 @@
-import Colors from "@/constants/Colors";
+import Colors from "@/src/constants/Colors";
 import {
   Modal,
   Platform,
   StyleSheet,
   TextInput,
   TouchableOpacity,
-  useColorScheme,
 } from "react-native";
 import { Text, View } from "./Themed";
 import { useState, useRef } from "react";
@@ -17,6 +16,7 @@ import * as Haptics from "expo-haptics";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import StreakDetailsPopup from "./StreakDetailsPopup";
 import { useTranslation } from "react-i18next";
+import { useTheme } from "@/src/hooks/useTheme";
 
 interface Props extends Streak {
   onUpdate: (updated: Streak | null) => void;
@@ -37,8 +37,7 @@ function getCycleLabel(
 }
 
 export default function StreakElement(props: Props) {
-  const colorScheme = useColorScheme();
-  const theme = Colors[colorScheme === "dark" ? "dark" : "light"];
+  const theme = useTheme();
   const styles = getStyles(theme);
 
   const { t } = useTranslation();

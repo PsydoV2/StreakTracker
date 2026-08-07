@@ -10,41 +10,27 @@ import {
   TouchableOpacity,
   View,
   Keyboard,
-  useColorScheme,
 } from "react-native";
-import { Text } from "@/components/Themed";
+import { Text } from "@/src/components/Themed";
+import PinDigitInput from "@/src/components/PinDigitInput";
 import { useEffect, useRef, useState } from "react";
 import Modal from "react-native-modal";
-import Colors from "@/constants/Colors";
+import Colors from "@/src/constants/Colors";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "@/src/context/LanguageContext";
 import { FontAwesome6 } from "@expo/vector-icons";
 import * as LocalAuthentication from "expo-local-authentication";
 import { router } from "expo-router";
+import { STORAGE_KEYS } from "@/src/constants/storageKeys";
+import { LANGUAGES } from "@/src/constants/languages";
+import { useTheme } from "@/src/hooks/useTheme";
 
-const STORAGE_KEY_PIN = "StreakTrackerPin";
-const STORAGE_KEY_BIOMETRIC = "StreakTrackerBiometric";
-const STORAGE_KEY_ONBOARDED = "StreakTrackerOnboarded";
 const PRIVACY_URL = "https://streaktracker.sfalter.de/privacy";
 const IMPRINT_URL = "https://streaktracker.sfalter.de/imprint";
 
-type Language = "en" | "de" | "es" | "fr" | "it" | "tr" | "pt" | "ja";
-
-const LANGUAGES: { code: Language; flag: string; name: string }[] = [
-  { code: "en", flag: "🇺🇸", name: "EN" },
-  { code: "de", flag: "🇩🇪", name: "DE" },
-  { code: "fr", flag: "🇫🇷", name: "FR" },
-  { code: "es", flag: "🇪🇸", name: "ES" },
-  { code: "it", flag: "🇮🇹", name: "IT" },
-  { code: "tr", flag: "🇹🇷", name: "TR" },
-  { code: "pt", flag: "🇧🇷", name: "PT" },
-  { code: "ja", flag: "🇯🇵", name: "JA" },
-];
-
 export default function Settings() {
-  const colorScheme = useColorScheme();
-  const colorPalette = colorScheme === "dark" ? Colors.dark : Colors.light;
+  const colorPalette = useTheme();
   const styles = getStyles(colorPalette);
 
   const [pinSet, setPinSet] = useState(false);
@@ -67,8 +53,8 @@ export default function Settings() {
   useEffect(() => {
     (async () => {
       const [pin, biometric] = await Promise.all([
-        AsyncStorage.getItem(STORAGE_KEY_PIN),
-        AsyncStorage.getItem(STORAGE_KEY_BIOMETRIC),
+        AsyncStorage.getItem(STORAGE_KEYS.pin),
+        AsyncStorage.getItem(STORAGE_KEYS.biometric),
       ]);
       setPinSet(!!pin);
       setBiometricEnabled(biometric === "true");
@@ -90,8 +76,8 @@ export default function Settings() {
   const toggleUsePin = async (value: boolean) => {
     if (!value) {
       await Promise.all([
-        AsyncStorage.removeItem(STORAGE_KEY_PIN),
-        AsyncStorage.removeItem(STORAGE_KEY_BIOMETRIC),
+        AsyncStorage.removeItem(STORAGE_KEYS.pin),
+        AsyncStorage.removeItem(STORAGE_KEYS.biometric),
       ]);
       setPinSet(false);
       setBiometricEnabled(false);
@@ -102,10 +88,10 @@ export default function Settings() {
 
   const toggleBiometric = async (value: boolean) => {
     if (value) {
-      await AsyncStorage.setItem(STORAGE_KEY_BIOMETRIC, "true");
+      await AsyncStorage.setItem(STORAGE_KEYS.biometric, "true");
       setBiometricEnabled(true);
     } else {
-      await AsyncStorage.removeItem(STORAGE_KEY_BIOMETRIC);
+      await AsyncStorage.removeItem(STORAGE_KEYS.biometric);
       setBiometricEnabled(false);
     }
   };
@@ -146,7 +132,7 @@ export default function Settings() {
       return;
     }
 
-    await AsyncStorage.setItem(STORAGE_KEY_PIN, enteredPin.join(""));
+    await AsyncStorage.setItem(STORAGE_KEYS.pin, enteredPin.join(""));
     setModalVisible(false);
     setPinSet(true);
     Keyboard.dismiss();
@@ -323,7 +309,7 @@ export default function Settings() {
           <TouchableOpacity
             style={styles.linkRow}
             onPress={async () => {
-              await AsyncStorage.removeItem(STORAGE_KEY_ONBOARDED);
+              await AsyncStorage.removeItem(STORAGE_KEYS.onboarded);
               router.replace("/OnboardingScreen");
             }}
           >
@@ -403,30 +389,18 @@ export default function Settings() {
 
           {/* PIN inputs */}
           <View style={styles.pinRow}>
-            {(pinStep === "enter" ? enteredPin : confirmPin).map(
-              (digit, index) => (
-                <TextInput
-                  key={index}
-                  ref={(ref) => {
-                    const targetRef =
-                      pinStep === "enter" ? inputs : confirmInputs;
-                    targetRef.current[index] = ref;
-                  }}
-                  style={[
-                    styles.pinInput,
-                    digit.length > 0 && styles.pinInputFilled,
-                    pinError && styles.pinInputError,
-                  ]}
-                  keyboardType="number-pad"
-                  secureTextEntry
-                  maxLength={1}
-                  value={digit}
-                  onChangeText={(text) =>
-                    handlePinChange(text, index, pinStep === "confirm")
-                  }
-                />
-              ),
-            )}
+            <PinDigitInput
+              digits={pinStep === "enter" ? enteredPin : confirmPin}
+              onChangeDigit={(text, index) =>
+                handlePinChange(text, index, pinStep === "confirm")
+              }
+              inputsRef={pinStep === "enter" ? inputs : confirmInputs}
+              status={(digit) =>
+                pinError ? "error" : digit.length > 0 ? "filled" : "idle"
+              }
+              size="lg"
+              theme={colorPalette}
+            />
           </View>
 
           {/* Error message */}
@@ -658,28 +632,7 @@ const getStyles = (colorPalette: typeof Colors.light) =>
 
     // PIN inputs
     pinRow: {
-      flexDirection: "row",
-      gap: 12,
       marginBottom: 8,
-    },
-    pinInput: {
-      borderWidth: 2,
-      borderRadius: 12,
-      width: 56,
-      height: 68,
-      textAlign: "center",
-      fontSize: 26,
-      backgroundColor: colorPalette.background200,
-      borderColor: colorPalette.background300,
-      color: colorPalette.text900,
-    },
-    pinInputFilled: {
-      borderColor: colorPalette.primary500,
-      backgroundColor: colorPalette.primary500 + "12",
-    },
-    pinInputError: {
-      borderColor: colorPalette.secondary500,
-      backgroundColor: colorPalette.secondary500 + "10",
     },
 
     // Error text

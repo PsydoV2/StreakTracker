@@ -9,6 +9,7 @@ import React, {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import uuid from "react-native-uuid";
 import { differenceInCalendarDays } from "date-fns";
+import { STORAGE_KEYS } from "@/src/constants/storageKeys";
 
 // cycle = interval in days (1 = daily, 2 = every 2 days, 7 = weekly, 30 = monthly, …)
 export type Streak = {
@@ -25,7 +26,7 @@ export type Streak = {
   trackingDates: string[];
 };
 
-const STORAGE_KEY = "@streaks";
+const STORAGE_KEY = STORAGE_KEYS.streaks;
 
 // Migration map for old string-based cycle values
 const LEGACY_CYCLE_MAP: Record<string, number> = {

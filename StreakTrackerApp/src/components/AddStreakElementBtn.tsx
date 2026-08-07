@@ -1,15 +1,15 @@
-import Colors from "@/constants/Colors";
+import Colors from "@/src/constants/Colors";
 import { FontAwesome6 } from "@expo/vector-icons";
-import { StyleSheet, TouchableOpacity, useColorScheme } from "react-native";
+import { StyleSheet, TouchableOpacity } from "react-native";
 import * as Haptics from "expo-haptics";
+import { useTheme } from "@/src/hooks/useTheme";
 
 type Props = {
   onAdd: (title: string, emoji: string) => void;
 };
 
 export default function AddStreakElementBtn({ onAdd }: Props) {
-  const colorScheme = useColorScheme();
-  const theme = Colors[colorScheme === "dark" ? "dark" : "light"];
+  const theme = useTheme();
   const styles = getStyles(theme);
 
   const handleAdd = () => {

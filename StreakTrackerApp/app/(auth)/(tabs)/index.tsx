@@ -1,11 +1,13 @@
 // app/(auth)/(tabs)/index.tsx
-import { Dimensions, ScrollView, StyleSheet } from "react-native";
-import { Text, View } from "@/components/Themed";
-import StreakElement from "@/components/StreakElement";
-import AddStreakElementBtn from "@/components/AddStreakElementBtn";
+import { StyleSheet } from "react-native";
+import { View } from "@/src/components/Themed";
+import StreakList from "@/src/components/StreakList";
+import AddStreakElementBtn from "@/src/components/AddStreakElementBtn";
+import StreakConfetti, {
+  StreakConfettiHandle,
+} from "@/src/components/StreakConfetti";
 import { useStreaks } from "@/src/context/StreaksContext";
-import { useCallback, useEffect, useRef, useState } from "react";
-import ConfettiCannon from "react-native-confetti-cannon";
+import { useCallback, useEffect, useRef } from "react";
 import { useFocusEffect } from "expo-router";
 import { updateEveningReminder } from "@/src/utils/NotificationManager";
 import { useTranslation } from "react-i18next";
@@ -15,10 +17,7 @@ export default function TabOneScreen() {
     useStreaks();
   const { t } = useTranslation();
 
-  const [showConfetti, setShowConfetti] = useState(false);
-  const confettiTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  const screenWidth = Dimensions.get("window").width;
+  const confettiRef = useRef<StreakConfettiHandle>(null);
 
   // Add a sample streak only on the very first launch (empty storage).
   // Guarded by didSeedRef, so this can never fire twice even though
@@ -40,56 +39,22 @@ export default function TabOneScreen() {
     }, [streaks, loaded]),
   );
 
-  // Clear the confetti timer on unmount to avoid state updates on an
-  // unmounted component.
-  useEffect(() => {
-    return () => {
-      if (confettiTimer.current) clearTimeout(confettiTimer.current);
-    };
-  }, []);
-
-  const handleConfettiAbfeuern = () => {
-    setShowConfetti(true);
-    confettiTimer.current = setTimeout(() => setShowConfetti(false), 3000);
-  };
-
   const activeStreaks = loaded ? streaks.filter((s) => !s.archived) : [];
 
   return (
     <View style={styles.container}>
-      {loaded && activeStreaks.length === 0 && (
-        <Text style={styles.emptyHint}>{t("emptyStateActive")}</Text>
-      )}
-      <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1 }}>
-        {loaded &&
-          activeStreaks.map((streak) => (
-            <StreakElement
-              key={streak.id}
-              {...streak}
-              onUpdate={(updated) => {
-                if (!updated) {
-                  deleteStreak(streak.id);
-                } else {
-                  updateStreak(updated);
-                }
-              }}
-              confettiAbfeuern={handleConfettiAbfeuern}
-            />
-          ))}
-      </ScrollView>
+      <StreakList
+        streaks={activeStreaks}
+        loaded={loaded}
+        emptyText={t("emptyStateActive")}
+        onUpdateStreak={updateStreak}
+        onDeleteStreak={deleteStreak}
+        onFireConfetti={() => confettiRef.current?.fire()}
+      />
 
       <AddStreakElementBtn onAdd={addStreak} />
 
-      {showConfetti && (
-        <ConfettiCannon
-          count={80}
-          origin={{ x: screenWidth / 2, y: 0 }}
-          fallSpeed={3000}
-          explosionSpeed={0}
-          fadeOut
-          autoStart
-        />
-      )}
+      <StreakConfetti ref={confettiRef} />
     </View>
   );
 }
@@ -97,13 +62,5 @@ export default function TabOneScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  emptyHint: {
-    marginTop: 20,
-    opacity: 0.6,
-    fontFamily: "PatrickHand",
-    fontSize: 22,
-    width: "100%",
-    textAlign: "center",
   },
 });

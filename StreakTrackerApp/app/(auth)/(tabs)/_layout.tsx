@@ -3,10 +3,10 @@ import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import { Link, Tabs } from "expo-router";
 import { Pressable, StyleSheet } from "react-native";
 
-import Colors from "@/constants/Colors";
-import { useColorScheme } from "@/components/useColorScheme";
-import { Text } from "@/components/Themed";
+import Colors from "@/src/constants/Colors";
+import { Text } from "@/src/components/Themed";
 import { useTranslation } from "react-i18next";
+import { useTheme } from "@/src/hooks/useTheme";
 
 function TabBarIcon(props: {
   name: React.ComponentProps<typeof FontAwesome6>["name"];
@@ -16,7 +16,7 @@ function TabBarIcon(props: {
 }
 
 function SettingsButton() {
-  const colorScheme = useColorScheme();
+  const theme = useTheme();
   return (
     <Link href="/settings" asChild>
       <Pressable>
@@ -24,7 +24,7 @@ function SettingsButton() {
           <FontAwesome6
             name="gears"
             size={22}
-            color={Colors[colorScheme === "dark" ? "dark" : "light"].text900}
+            color={theme.text900}
             style={{ marginRight: 16, opacity: pressed ? 0.5 : 1 }}
           />
         )}
@@ -34,8 +34,7 @@ function SettingsButton() {
 }
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
-  const theme = Colors[colorScheme === "dark" ? "dark" : "light"];
+  const theme = useTheme();
   const styles = getStyles(theme);
 
   const { t } = useTranslation();

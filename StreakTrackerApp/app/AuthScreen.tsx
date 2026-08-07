@@ -8,11 +8,11 @@ import {
   TextInput,
   TouchableOpacity,
   TouchableWithoutFeedback,
-  useColorScheme,
 } from "react-native";
-import { Text, View } from "@/components/Themed";
+import { Text, View } from "@/src/components/Themed";
+import PinDigitInput from "@/src/components/PinDigitInput";
 import { router } from "expo-router";
-import Colors from "@/constants/Colors";
+import Colors from "@/src/constants/Colors";
 import { useCallback, useEffect, useRef, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Haptics from "expo-haptics";
@@ -20,14 +20,11 @@ import * as LocalAuthentication from "expo-local-authentication";
 import { useTranslation } from "react-i18next";
 import { markPinVerified } from "@/src/pinSession";
 import { FontAwesome6 } from "@expo/vector-icons";
-
-const STORAGE_KEY_PIN = "StreakTrackerPin";
-const STORAGE_KEY_BIOMETRIC = "StreakTrackerBiometric";
-const STORAGE_KEY_ONBOARDED = "StreakTrackerOnboarded";
+import { STORAGE_KEYS } from "@/src/constants/storageKeys";
+import { useTheme } from "@/src/hooks/useTheme";
 
 export default function AuthScreen() {
-  const colorScheme = useColorScheme();
-  const colorPalette = colorScheme === "dark" ? Colors.dark : Colors.light;
+  const colorPalette = useTheme();
   const styles = getStyles(colorPalette);
 
   const [digits, setDigits] = useState(["", "", "", ""]);
@@ -49,14 +46,14 @@ export default function AuthScreen() {
     const init = async () => {
       try {
         // 1. Onboarding check
-        const onboarded = await AsyncStorage.getItem(STORAGE_KEY_ONBOARDED);
+        const onboarded = await AsyncStorage.getItem(STORAGE_KEYS.onboarded);
         if (!onboarded) {
           router.replace("/OnboardingScreen");
           return;
         }
 
         // 2. PIN check
-        const pin = await AsyncStorage.getItem(STORAGE_KEY_PIN);
+        const pin = await AsyncStorage.getItem(STORAGE_KEYS.pin);
         if (__DEV__)
           console.info("[AuthScreen] Stored PIN found:", pin !== null);
 
@@ -68,7 +65,7 @@ export default function AuthScreen() {
 
         // 3. Biometric check
         const biometricEnabled = await AsyncStorage.getItem(
-          STORAGE_KEY_BIOMETRIC,
+          STORAGE_KEYS.biometric,
         );
         if (biometricEnabled === "true") {
           const hasHardware = await LocalAuthentication.hasHardwareAsync();
@@ -149,7 +146,7 @@ export default function AuthScreen() {
 
   const checkPassword = async (entered: string) => {
     try {
-      const stored = await AsyncStorage.getItem(STORAGE_KEY_PIN);
+      const stored = await AsyncStorage.getItem(STORAGE_KEYS.pin);
       if (!stored) return;
 
       if (entered === stored) {
@@ -197,27 +194,21 @@ export default function AuthScreen() {
           <Text style={styles.paragraph}>{t("subTitleStart")}</Text>
 
           <View style={styles.inputCon}>
-            {digits.map((digit, index) => (
-              <TextInput
-                key={index}
-                ref={(ref) => {
-                  inputs.current[index] = ref;
-                }}
-                style={[
-                  styles.input,
-                  isCorrect === true && styles.inputSuccess,
-                  isCorrect === false && styles.inputError,
-                ]}
-                keyboardType="number-pad"
-                secureTextEntry
-                maxLength={1}
-                value={digit}
-                onChangeText={(text) => handleChange(text, index)}
-                onKeyPress={({ nativeEvent }) =>
-                  handleBackspace(nativeEvent.key, index)
-                }
-              />
-            ))}
+            <PinDigitInput
+              digits={digits}
+              onChangeDigit={handleChange}
+              onKeyPressDigit={handleBackspace}
+              inputsRef={inputs}
+              status={
+                isCorrect === true
+                  ? "success"
+                  : isCorrect === false
+                    ? "error"
+                    : "idle"
+              }
+              size="sm"
+              theme={colorPalette}
+            />
           </View>
 
           {biometricAvailable && (
@@ -273,32 +264,7 @@ const getStyles = (colorPalette: typeof Colors.light) =>
       fontFamily: "Roboto",
     },
     inputCon: {
-      flexDirection: "row",
-      justifyContent: "space-evenly",
-      width: "100%",
-      maxWidth: 200,
       marginBottom: 24,
-    },
-    input: {
-      borderWidth: 1,
-      borderRadius: 6,
-      width: 40,
-      height: 60,
-      marginHorizontal: 5,
-      backgroundColor: colorPalette.background200,
-      color: colorPalette.text950,
-      textAlign: "center",
-      fontSize: 24,
-      fontFamily: "Roboto",
-      borderColor: "transparent",
-    },
-    inputSuccess: {
-      borderColor: "green",
-      borderWidth: 2,
-    },
-    inputError: {
-      borderColor: "red",
-      borderWidth: 2,
     },
     biometricBtn: {
       flexDirection: "row",

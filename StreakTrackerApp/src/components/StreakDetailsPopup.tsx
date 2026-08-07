@@ -1,17 +1,11 @@
 import React, { forwardRef } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  FlatList,
-  useColorScheme,
-  Dimensions,
-} from "react-native";
+import { View, Text, StyleSheet, FlatList, Dimensions } from "react-native";
 import { BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet";
-import Colors from "@/constants/Colors";
+import Colors from "@/src/constants/Colors";
 import { FontAwesome6 } from "@expo/vector-icons";
 import { format } from "date-fns";
 import { useTranslation } from "react-i18next";
+import { useTheme } from "@/src/hooks/useTheme";
 interface Props {
   streakCount: number;
   record: number;
@@ -25,8 +19,7 @@ const CELL_SIZE = Math.floor((SCREEN_WIDTH - 32) / NUM_COLUMNS) - 4;
 
 const StreakDetailsPopup = forwardRef<BottomSheetModal, Props>(
   ({ streakCount, record, trackingDates, cycle }, ref) => {
-    const colorScheme = useColorScheme();
-    const theme = Colors[colorScheme === "dark" ? "dark" : "light"];
+    const theme = useTheme();
     const styles = getStyles(theme);
     const today = new Date();
 

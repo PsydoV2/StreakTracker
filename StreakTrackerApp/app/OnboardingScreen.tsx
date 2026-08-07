@@ -4,25 +4,23 @@ import {
   FlatList,
   StyleSheet,
   TouchableOpacity,
-  useColorScheme,
   View,
   ViewToken,
 } from "react-native";
-import { Text } from "@/components/Themed";
+import { Text } from "@/src/components/Themed";
 import { useCallback, useRef, useState } from "react";
 import { router } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Constants from "expo-constants";
 import { FontAwesome6 } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
-import Colors from "@/constants/Colors";
+import Colors from "@/src/constants/Colors";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { STORAGE_KEYS } from "@/src/constants/storageKeys";
+import { useTheme } from "@/src/hooks/useTheme";
 
 const SCREEN_WIDTH = Dimensions.get("window").width;
 const VIEWABILITY_CONFIG = { viewAreaCoveragePercentThreshold: 50 };
-
-const STORAGE_KEY_ONBOARDED = "StreakTrackerOnboarded";
-const STORAGE_KEY_LAST_VERSION = "StreakTrackerLastVersion";
 
 type Page = {
   icon: string;
@@ -59,8 +57,7 @@ const PAGES: Page[] = [
 ];
 
 export default function OnboardingScreen() {
-  const colorScheme = useColorScheme();
-  const theme = Colors[colorScheme === "dark" ? "dark" : "light"];
+  const theme = useTheme();
   const styles = getStyles(theme);
   const { t } = useTranslation();
 
@@ -87,8 +84,8 @@ export default function OnboardingScreen() {
   const handleComplete = async () => {
     const version = Constants.expoConfig?.version ?? "0";
     await Promise.all([
-      AsyncStorage.setItem(STORAGE_KEY_ONBOARDED, "true"),
-      AsyncStorage.setItem(STORAGE_KEY_LAST_VERSION, version),
+      AsyncStorage.setItem(STORAGE_KEYS.onboarded, "true"),
+      AsyncStorage.setItem(STORAGE_KEYS.lastVersion, version),
     ]);
     router.replace("/AuthScreen");
   };

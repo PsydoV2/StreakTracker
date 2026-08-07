@@ -1,4 +1,4 @@
-import Colors from "@/constants/Colors";
+import Colors from "@/src/constants/Colors";
 import React, { useState } from "react";
 import {
   View,
@@ -8,9 +8,9 @@ import {
   FlatList,
   Dimensions,
   Modal,
-  useColorScheme,
   ScrollView,
 } from "react-native";
+import { useTheme } from "@/src/hooks/useTheme";
 
 export const emojiCategories = {
   "😀": [
@@ -452,8 +452,7 @@ export default function EmojiOverlayPicker({
 }: Props) {
   const [activeCategory, setActiveCategory] =
     useState<keyof typeof emojiCategories>("😀");
-  const colorScheme = useColorScheme();
-  const theme = Colors[colorScheme === "dark" ? "dark" : "light"];
+  const theme = useTheme();
   const styles = getStyles(theme);
 
   const renderEmoji = ({ item }: { item: string }) => (
