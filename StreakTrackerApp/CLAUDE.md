@@ -43,35 +43,35 @@ Both contexts are mounted in `app/_layout.tsx` wrapping the entire `<Slot />`.
 
 ### Data model (`Streak` type)
 
-| Field | Purpose |
-|---|---|
-| `streakCount` | Current consecutive days |
-| `record` | All-time best streak |
-| `trackingDates` | ISO strings of every tracked day |
+| Field             | Purpose                                                        |
+| ----------------- | -------------------------------------------------------------- |
+| `streakCount`     | Current consecutive days                                       |
+| `record`          | All-time best streak                                           |
+| `trackingDates`   | ISO strings of every tracked day                               |
 | `dateLastTracker` | ISO string of last tracking; epoch (Jan 1 1970) when untouched |
-| `archived` | True when broken or manually archived |
-| `dateRestartedAt` | Set on restart; null otherwise |
+| `archived`        | True when broken or manually archived                          |
+| `dateRestartedAt` | Set on restart; null otherwise                                 |
 
 ### Theming & styling
 
-Colors are defined in `constants/Colors.ts` with `light` and `dark` variants. Each color has a scale: `text50–text950`, `background50–background950`, `primary50–primary950`, `secondary50–secondary950`, `accent50–accent950`.
+Colors are defined in `src/constants/Colors.ts` with `light` and `dark` variants. Each color has a scale: `text50–text950`, `background50–background950`, `primary50–primary950`, `secondary50–secondary950`, `accent50–accent950`.
 
 **The color palette and logo (`assets/images/logo.png`) are locked and must not be changed.**
 
-Every component derives styles by calling `getStyles(colorPalette)` at render time:
+Every component resolves the current palette via the shared `useTheme()` hook (`src/hooks/useTheme.ts`) and derives styles by calling `getStyles(theme)` at render time:
+
 ```ts
-const colorScheme = useColorScheme();
-const colorPalette = colorScheme === "dark" ? Colors.dark : Colors.light;
-const styles = getStyles(colorPalette);
+const theme = useTheme();
+const styles = getStyles(theme);
 ```
 
 ### Fonts
 
-| Font | Usage |
-|---|---|
+| Font          | Usage                           |
+| ------------- | ------------------------------- |
 | `PatrickHand` | Titles, headings, large UI text |
-| `Roboto` | Body text, labels, info text |
-| `SpaceMono` | (available, not currently used) |
+| `Roboto`      | Body text, labels, info text    |
+| `SpaceMono`   | (available, not currently used) |
 
 Always specify `fontFamily` explicitly — React Native does not inherit fonts.
 
@@ -82,25 +82,35 @@ Always specify `fontFamily` explicitly — React Native does not inherit fonts.
 ### Notifications
 
 `src/utils/NotificationManager.ts` exports:
+
 - `requestNotificationPermissions()` — call once at startup
 - `scheduleDefaultReminders()` — sets morning (08:00) and evening (20:00) notifications
 - `updateEveningReminder(streaks)` — call on focus to update evening message based on completion state
 
 All functions are no-ops in Expo Go (`isExpoGo` guard). `expo-notifications` is always `require()`'d inside the function body, never imported at the top of the file.
 
-### Key components
+### Key components (`src/components/`)
 
 - `StreakElement` — card for a single streak; handles inline title editing, emoji picker, track-today button, archive/delete context menu, and details bottom sheet
+- `StreakList` — shared list body (empty state + scrollable list of `StreakElement`s) used by both the active-streaks and archive tabs
+- `StreakConfetti` — imperative-handle confetti burst (`ref.current.fire()`), used after tracking/restarting a streak
 - `AddStreakElementBtn` — FAB to create new streaks
 - `EmojiPicker` — full-screen overlay emoji selector
 - `StreakDetailsPopup` — `@gorhom/bottom-sheet` modal with streak stats and tracking calendar
+- `PinDigitInput` — shared row of 4 PIN digit boxes, used by both `AuthScreen` (unlock) and the settings PIN-setup modal
 
-### AsyncStorage keys
+### Shared hooks & constants
 
-| Key | Content |
-|---|---|
-| `@streaks` | JSON array of `Streak` objects |
-| `StreakTrackerPin` | 4-digit PIN string |
-| `StreakTrackerBiometric` | `"true"` if biometric enabled |
+- `useTheme()` (`src/hooks/useTheme.ts`) — resolves `useColorScheme()` straight to the matching `Colors` palette; use this instead of re-deriving `Colors[scheme === "dark" ? "dark" : "light"]` in each component
+- `STORAGE_KEYS` (`src/constants/storageKeys.ts`) — single source of truth for all AsyncStorage key strings
+- `LANGUAGES` / `Language` (`src/constants/languages.ts`) — supported-language list and type, shared by `LanguageContext` and the settings language picker
+
+### AsyncStorage keys (`src/constants/storageKeys.ts`)
+
+| Key                      | Content                           |
+| ------------------------ | --------------------------------- |
+| `@streaks`               | JSON array of `Streak` objects    |
+| `StreakTrackerPin`       | 4-digit PIN string                |
+| `StreakTrackerBiometric` | `"true"` if biometric enabled     |
 | `StreakTrackerOnboarded` | Any truthy value after onboarding |
-| `streakTrackerLanguage` | Language code |
+| `streakTrackerLanguage`  | Language code                     |

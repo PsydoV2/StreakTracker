@@ -2,8 +2,8 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 import i18n from "i18next";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getLocales } from "expo-localization";
-
-type Language = "en" | "de" | "es" | "fr" | "it" | "tr" | "pt" | "ja";
+import { Language } from "@/src/constants/languages";
+import { STORAGE_KEYS } from "@/src/constants/storageKeys";
 
 type LanguageContextType = {
   language: Language;
@@ -11,10 +11,8 @@ type LanguageContextType = {
 };
 
 const LanguageContext = createContext<LanguageContextType | undefined>(
-  undefined
+  undefined,
 );
-
-const streakTrackerLanguageKey = "streakTrackerLanguage";
 
 export const LanguageProvider = ({
   children,
@@ -25,10 +23,12 @@ export const LanguageProvider = ({
 
   useEffect(() => {
     const initLanguage = async () => {
-      const savedLng = await AsyncStorage.getItem(streakTrackerLanguageKey);
+      const savedLng = await AsyncStorage.getItem(STORAGE_KEYS.language);
       const fallback = getLocales()[0]?.languageCode || "en";
       const lng = (savedLng || fallback) as Language;
 
+      // i18next's default export intentionally carries its own instance methods.
+      // eslint-disable-next-line import/no-named-as-default-member
       await i18n.changeLanguage(lng);
       setLanguageState(lng);
     };
@@ -37,8 +37,10 @@ export const LanguageProvider = ({
   }, []);
 
   const setLanguage = async (lng: Language) => {
+    // i18next's default export intentionally carries its own instance methods.
+    // eslint-disable-next-line import/no-named-as-default-member
     await i18n.changeLanguage(lng);
-    await AsyncStorage.setItem(streakTrackerLanguageKey, lng);
+    await AsyncStorage.setItem(STORAGE_KEYS.language, lng);
     setLanguageState(lng);
   };
 

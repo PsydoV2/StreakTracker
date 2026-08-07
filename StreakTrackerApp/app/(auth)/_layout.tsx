@@ -1,16 +1,15 @@
 import { Stack, router } from "expo-router";
-import { useColorScheme } from "react-native";
-import Colors from "@/constants/Colors";
 import { useTranslation } from "react-i18next";
 import { useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { isPinVerified } from "@/src/pinSession";
-
-const STORAGE_KEY_PIN = "StreakTrackerPin";
+import { STORAGE_KEYS } from "@/src/constants/storageKeys";
+import { useTheme } from "@/src/hooks/useTheme";
+import { useColorScheme } from "@/src/hooks/useColorScheme";
 
 export default function AppLayout() {
   const colorScheme = useColorScheme();
-  const theme = Colors[colorScheme ?? "light"];
+  const theme = useTheme();
 
   const { t } = useTranslation();
 
@@ -18,7 +17,7 @@ export default function AppLayout() {
   useEffect(() => {
     if (isPinVerified()) return;
 
-    AsyncStorage.getItem(STORAGE_KEY_PIN).then((pin) => {
+    AsyncStorage.getItem(STORAGE_KEYS.pin).then((pin) => {
       if (pin && pin.trim().length > 0) {
         router.replace("/AuthScreen");
       }

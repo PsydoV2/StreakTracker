@@ -1,18 +1,11 @@
 import React, { forwardRef } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  FlatList,
-  useColorScheme,
-  Dimensions,
-  TouchableOpacity,
-} from "react-native";
+import { View, Text, StyleSheet, FlatList, Dimensions } from "react-native";
 import { BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet";
-import Colors from "@/constants/Colors";
+import Colors from "@/src/constants/Colors";
 import { FontAwesome6 } from "@expo/vector-icons";
 import { format } from "date-fns";
 import { useTranslation } from "react-i18next";
+import { useTheme } from "@/src/hooks/useTheme";
 interface Props {
   streakCount: number;
   record: number;
@@ -26,8 +19,7 @@ const CELL_SIZE = Math.floor((SCREEN_WIDTH - 32) / NUM_COLUMNS) - 4;
 
 const StreakDetailsPopup = forwardRef<BottomSheetModal, Props>(
   ({ streakCount, record, trackingDates, cycle }, ref) => {
-    const colorScheme = useColorScheme();
-    const theme = Colors[colorScheme ?? "light"];
+    const theme = useTheme();
     const styles = getStyles(theme);
     const today = new Date();
 
@@ -44,7 +36,7 @@ const StreakDetailsPopup = forwardRef<BottomSheetModal, Props>(
     const totalTracked = safeDates.length;
 
     const trackedSet = new Set(
-      safeDates.map((d) => format(new Date(d), "yyyy-MM-dd"))
+      safeDates.map((d) => format(new Date(d), "yyyy-MM-dd")),
     );
 
     const renderItem = ({ item }: { item: Date }) => {
@@ -135,14 +127,14 @@ const StreakDetailsPopup = forwardRef<BottomSheetModal, Props>(
                   style={{ marginRight: 4 }}
                 />
                 <Text style={styles.statLabel}>
-                {cycle === 7
-                  ? t("weeksTracked")
-                  : cycle === 30
-                    ? t("monthsTracked")
-                    : cycle === 1
-                      ? t("daysTracked")
-                      : t("timesTracked")}
-              </Text>
+                  {cycle === 7
+                    ? t("weeksTracked")
+                    : cycle === 30
+                      ? t("monthsTracked")
+                      : cycle === 1
+                        ? t("daysTracked")
+                        : t("timesTracked")}
+                </Text>
               </View>
             </View>
           </View>
@@ -171,8 +163,10 @@ const StreakDetailsPopup = forwardRef<BottomSheetModal, Props>(
         </BottomSheetScrollView>
       </BottomSheetModal>
     );
-  }
+  },
 );
+
+StreakDetailsPopup.displayName = "StreakDetailsPopup";
 
 export default StreakDetailsPopup;
 
