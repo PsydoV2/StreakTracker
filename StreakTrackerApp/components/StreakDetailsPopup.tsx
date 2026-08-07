@@ -27,7 +27,7 @@ const CELL_SIZE = Math.floor((SCREEN_WIDTH - 32) / NUM_COLUMNS) - 4;
 const StreakDetailsPopup = forwardRef<BottomSheetModal, Props>(
   ({ streakCount, record, trackingDates, cycle }, ref) => {
     const colorScheme = useColorScheme();
-    const theme = Colors[colorScheme ?? "light"];
+    const theme = Colors[colorScheme === "dark" ? "dark" : "light"];
     const styles = getStyles(theme);
     const today = new Date();
 

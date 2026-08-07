@@ -7,16 +7,13 @@
     "icon": "./assets/images/icon.png",
     "scheme": "streaktracker",
     "userInterfaceStyle": "automatic",
-    "splash": {
-      "image": "./assets/images/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#1a1a1a"
-    },
     "updates": {
       "url": "https://u.expo.dev/56c57319-8317-4119-aa8b-d27c4c6acbd2"
     },
     "runtimeVersion": "1.6.0",
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true
     },
@@ -42,7 +39,17 @@
         {
           "faceIDPermission": "StreakTracker uses Face ID to protect your data."
         }
-      ]
+      ],
+      "expo-font",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/images/splash.png",
+          "resizeMode": "contain",
+          "backgroundColor": "#1a1a1a"
+        }
+      ],
+      "expo-status-bar"
     ],
     "experiments": {
       "typedRoutes": true

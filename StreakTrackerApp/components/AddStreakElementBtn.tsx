@@ -9,7 +9,7 @@ type Props = {
 
 export default function AddStreakElementBtn({ onAdd }: Props) {
   const colorScheme = useColorScheme();
-  const theme = Colors[colorScheme ?? "light"];
+  const theme = Colors[colorScheme === "dark" ? "dark" : "light"];
   const styles = getStyles(theme);
 
   const handleAdd = () => {

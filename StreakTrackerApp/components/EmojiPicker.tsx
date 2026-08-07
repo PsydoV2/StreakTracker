@@ -453,7 +453,7 @@ export default function EmojiOverlayPicker({
   const [activeCategory, setActiveCategory] =
     useState<keyof typeof emojiCategories>("😀");
   const colorScheme = useColorScheme();
-  const theme = Colors[colorScheme ?? "light"];
+  const theme = Colors[colorScheme === "dark" ? "dark" : "light"];
   const styles = getStyles(theme);
 
   const renderEmoji = ({ item }: { item: string }) => (

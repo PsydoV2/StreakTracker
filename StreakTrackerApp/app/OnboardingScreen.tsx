@@ -59,7 +59,7 @@ const PAGES: Page[] = [
 
 export default function OnboardingScreen() {
   const colorScheme = useColorScheme();
-  const theme = Colors[colorScheme ?? "light"];
+  const theme = Colors[colorScheme === "dark" ? "dark" : "light"];
   const styles = getStyles(theme);
   const { t } = useTranslation();
 

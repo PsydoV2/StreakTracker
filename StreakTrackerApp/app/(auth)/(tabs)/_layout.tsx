@@ -10,7 +10,7 @@ import { useTranslation } from "react-i18next";
 
 function TabBarIcon(props: {
   name: React.ComponentProps<typeof FontAwesome6>["name"];
-  color: string;
+  color: React.ComponentProps<typeof FontAwesome6>["color"];
 }) {
   return <FontAwesome6 size={22} {...props} />;
 }
@@ -24,7 +24,7 @@ function SettingsButton() {
           <FontAwesome6
             name="gears"
             size={22}
-            color={Colors[colorScheme ?? "light"].text900}
+            color={Colors[colorScheme === "dark" ? "dark" : "light"].text900}
             style={{ marginRight: 16, opacity: pressed ? 0.5 : 1 }}
           />
         )}
@@ -35,7 +35,7 @@ function SettingsButton() {
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
-  const theme = Colors[colorScheme ?? "light"];
+  const theme = Colors[colorScheme === "dark" ? "dark" : "light"];
   const styles = getStyles(theme);
 
   const { t } = useTranslation();

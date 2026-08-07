@@ -10,7 +10,7 @@ const STORAGE_KEY_PIN = "StreakTrackerPin";
 
 export default function AppLayout() {
   const colorScheme = useColorScheme();
-  const theme = Colors[colorScheme ?? "light"];
+  const theme = Colors[colorScheme === "dark" ? "dark" : "light"];
 
   const { t } = useTranslation();
 
