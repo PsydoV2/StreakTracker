@@ -2,7 +2,7 @@
   "expo": {
     "name": "StreakTracker",
     "slug": "streaktracker",
-    "version": "1.6.1",
+    "version": "2.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "streaktracker",
@@ -10,7 +10,7 @@
     "updates": {
       "url": "https://u.expo.dev/56c57319-8317-4119-aa8b-d27c4c6acbd2"
     },
-    "runtimeVersion": "1.6.0",
+    "runtimeVersion": "2.0.0",
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true
