@@ -13,7 +13,7 @@ import {
 import { Text, View } from "@/components/Themed";
 import { router } from "expo-router";
 import Colors from "@/constants/Colors";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Haptics from "expo-haptics";
 import * as LocalAuthentication from "expo-local-authentication";
@@ -41,9 +41,9 @@ export default function AuthScreen() {
   const { t } = useTranslation();
   const inputs = useRef<(TextInput | null)[]>([null, null, null, null]);
 
-  const navigateAfterAuth = () => {
+  const navigateAfterAuth = useCallback(() => {
     router.replace("/");
-  };
+  }, []);
 
   useEffect(() => {
     const init = async () => {
@@ -92,9 +92,9 @@ export default function AuthScreen() {
     };
 
     init();
-  }, []);
+  }, [navigateAfterAuth]);
 
-  const triggerBiometric = async () => {
+  const triggerBiometric = useCallback(async () => {
     try {
       const result = await LocalAuthentication.authenticateAsync({
         promptMessage: t("biometricPrompt"),
@@ -112,17 +112,14 @@ export default function AuthScreen() {
     } catch (error) {
       console.error("[AuthScreen] Biometric auth error:", error);
     }
-  };
+  }, [t, navigateAfterAuth]);
 
-  // Auto-trigger biometric once confirmed available. Intentionally only
-  // re-runs when these two flags flip, not on every triggerBiometric
-  // identity change, otherwise the prompt would re-fire on each render.
+  // Auto-trigger biometric once confirmed available.
   useEffect(() => {
     if (!isLoadingPin && biometricAvailable) {
       triggerBiometric();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoadingPin, biometricAvailable]);
+  }, [isLoadingPin, biometricAvailable, triggerBiometric]);
 
   const handleChange = (text: string, index: number) => {
     const newDigits = [...digits];
