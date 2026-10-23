@@ -61,8 +61,8 @@ export default function Privacy() {
             Sebastian Falter
             <br />
             Email:{" "}
-            <a href="mailto:seb.falter@gmail.com" className="legalLink">
-              seb.falter@gmail.com
+            <a href="mailto:info@sfalter.de" className="legalLink">
+              info@sfalter.de
             </a>
           </p>
         </motion.section>
@@ -183,8 +183,8 @@ export default function Privacy() {
           <p>
             If you have any questions about this privacy policy, feel free to
             reach out:{" "}
-            <a href="mailto:seb.falter@gmail.com" className="legalLink">
-              seb.falter@gmail.com
+            <a href="mailto:info@sfalter.de" className="legalLink">
+              info@sfalter.de
             </a>
           </p>
         </motion.section>

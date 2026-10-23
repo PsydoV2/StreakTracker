@@ -52,8 +52,8 @@ export default function Imprint() {
           <h2 className="legalSectionTitle patrick-hand-regular">Contact</h2>
           <p>
             Email:{" "}
-            <a href="mailto:seb.falter@gmail.com" className="legalLink">
-              seb.falter@gmail.com
+            <a href="mailto:info@sfalter.de" className="legalLink">
+              info@sfalter.de
             </a>
           </p>
         </motion.section>
